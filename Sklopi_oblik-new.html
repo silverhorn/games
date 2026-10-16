@@ -34,7 +34,7 @@
     @media(max-width:340px){.story-tabs .icon{display:none}.story-task-top{flex-wrap:wrap}.story-tools button{font-size:10px}.home-tray{grid-template-columns:repeat(3,minmax(0,1fr))}}
     /* SETS_CSS_START */
     /* Sets workshop: scoped controls, original SVG illustrations and touch targets. */
-    .activity-nav{grid-template-columns:repeat(7,minmax(0,1fr))}
+    .activity-nav{grid-template-columns:repeat(8,minmax(0,1fr))}
     .sets-panel{background:#fff;border:1px solid var(--line);border-radius:26px;overflow:hidden;box-shadow:0 8px 36px #23423805}
     .sets-panel[hidden]{display:none}.sets-panel button:disabled{opacity:.6}
     .set-toolbar{display:flex;justify-content:space-between;gap:18px;padding:19px 25px;background:#f9faf4;border-bottom:1px solid var(--line)}
@@ -121,9 +121,51 @@
     .set-drag-ghost{position:fixed;width:66px;height:66px;z-index:70;pointer-events:none;filter:drop-shadow(0 7px 5px #233d3a35)}.set-drag-ghost svg{width:100%;height:100%}
     .set-solved .set-body{background:linear-gradient(180deg,#fff,#fafdf5)}
     @media(max-width:960px){.activity-nav{grid-template-columns:repeat(4,minmax(0,1fr))}.set-toolbar>div{align-items:flex-start;flex-direction:column;gap:7px}.set-toolbar>div:first-child{flex:1}.set-toolbar select{max-width:100%}.set-actions{flex-wrap:wrap}.set-bins{gap:10px}.set-bin-title{font-size:12px}.set-catalog{grid-template-columns:repeat(3,minmax(0,1fr))}}
-    @media(max-width:590px){.activity-nav{grid-template-columns:repeat(2,minmax(0,1fr))}.activity-button[data-activity="sets"]{grid-column:1/-1;justify-content:center}.sets-panel{border-radius:21px}.set-toolbar{padding:15px;gap:11px}.set-toolbar label{font-size:11px}.set-toolbar select{font-size:12px;padding:10px 9px}.set-toolbar>div:last-child{max-width:43%}.set-task-top{padding:20px 16px 0;gap:8px}.set-kind{font-size:10px}.set-difficulty{font-size:10px;padding:7px 9px}.set-prompt{font-size:20px;padding:12px 16px 6px}.set-body{padding:14px 15px 22px}.set-bank{gap:9px;grid-template-columns:repeat(auto-fit,minmax(68px,1fr))}.set-tile{min-height:80px;padding:7px 3px;border-radius:15px}.set-tile svg{width:55px;height:55px}.set-item-label{font-size:9px}.set-bins{grid-template-columns:1fr;gap:12px;margin-top:16px}.set-bin{min-height:125px;border-radius:22px}.set-bin-title{min-height:46px;font-size:12px}.set-bin-items{min-height:60px;padding:10px}.set-bin-items .set-tile{width:54px;min-height:55px}.set-bin-items .set-tile svg{width:44px;height:44px}.set-two{gap:12px}.set-oval{padding:17px 12px;min-height:153px;border-radius:40%}.set-static{width:43px;height:43px}.set-inside{gap:6px}.set-oval-wrap h3{font-size:12px;margin-bottom:9px}.set-oval .set-tile{width:48px;min-height:48px;padding:2px}.set-oval .set-tile svg{width:44px;height:44px}.set-number{width:44px;min-height:44px;font-size:18px}.set-number-answer>div{gap:6px}.set-choice-list{gap:8px;margin-top:20px}.set-choice{min-height:51px;font-size:12px;flex-basis:115px;padding:10px}.set-feedback,.set-hint{margin:0 15px 15px;font-size:12px;padding:13px}.set-actions{padding:2px 15px 20px;gap:13px}.set-actions>div{width:100%}.set-actions>div:last-child{justify-content:flex-end}.set-actions .secondary{font-size:11px;padding:11px 9px}.set-palette{gap:6px}.set-palette button{font-size:11px;padding:8px;gap:5px}.set-palette i{width:19px;height:19px}.set-paint-rules{gap:7px;font-size:11px}.set-paint-rules>span{padding:7px 9px}.set-rule-banner{font-size:12px;padding:11px}.set-pair-instruction,.set-interaction-tip{font-size:11px}.set-catalog-details,.set-guide-details{padding:16px 15px}.set-catalog{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.set-category{padding:12px 10px;min-height:102px}.set-guide{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.set-bottom{padding:14px 15px;font-size:10px}.set-add-controls{gap:8px}.set-add{font-size:12px;padding:10px 11px}.set-add svg{width:29px;height:29px}.set-scene{max-width:380px}}
+    @media(max-width:590px){.activity-nav{grid-template-columns:repeat(2,minmax(0,1fr))}.sets-panel{border-radius:21px}.set-toolbar{padding:15px;gap:11px}.set-toolbar label{font-size:11px}.set-toolbar select{font-size:12px;padding:10px 9px}.set-toolbar>div:last-child{max-width:43%}.set-task-top{padding:20px 16px 0;gap:8px}.set-kind{font-size:10px}.set-difficulty{font-size:10px;padding:7px 9px}.set-prompt{font-size:20px;padding:12px 16px 6px}.set-body{padding:14px 15px 22px}.set-bank{gap:9px;grid-template-columns:repeat(auto-fit,minmax(68px,1fr))}.set-tile{min-height:80px;padding:7px 3px;border-radius:15px}.set-tile svg{width:55px;height:55px}.set-item-label{font-size:9px}.set-bins{grid-template-columns:1fr;gap:12px;margin-top:16px}.set-bin{min-height:125px;border-radius:22px}.set-bin-title{min-height:46px;font-size:12px}.set-bin-items{min-height:60px;padding:10px}.set-bin-items .set-tile{width:54px;min-height:55px}.set-bin-items .set-tile svg{width:44px;height:44px}.set-two{gap:12px}.set-oval{padding:17px 12px;min-height:153px;border-radius:40%}.set-static{width:43px;height:43px}.set-inside{gap:6px}.set-oval-wrap h3{font-size:12px;margin-bottom:9px}.set-oval .set-tile{width:48px;min-height:48px;padding:2px}.set-oval .set-tile svg{width:44px;height:44px}.set-number{width:44px;min-height:44px;font-size:18px}.set-number-answer>div{gap:6px}.set-choice-list{gap:8px;margin-top:20px}.set-choice{min-height:51px;font-size:12px;flex-basis:115px;padding:10px}.set-feedback,.set-hint{margin:0 15px 15px;font-size:12px;padding:13px}.set-actions{padding:2px 15px 20px;gap:13px}.set-actions>div{width:100%}.set-actions>div:last-child{justify-content:flex-end}.set-actions .secondary{font-size:11px;padding:11px 9px}.set-palette{gap:6px}.set-palette button{font-size:11px;padding:8px;gap:5px}.set-palette i{width:19px;height:19px}.set-paint-rules{gap:7px;font-size:11px}.set-paint-rules>span{padding:7px 9px}.set-rule-banner{font-size:12px;padding:11px}.set-pair-instruction,.set-interaction-tip{font-size:11px}.set-catalog-details,.set-guide-details{padding:16px 15px}.set-catalog{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.set-category{padding:12px 10px;min-height:102px}.set-guide{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.set-bottom{padding:14px 15px;font-size:10px}.set-add-controls{gap:8px}.set-add{font-size:12px;padding:10px 11px}.set-add svg{width:29px;height:29px}.set-scene{max-width:380px}}
     @media(max-width:370px){.set-two{grid-template-columns:1fr}.set-two .set-oval{max-width:270px;margin:auto;min-height:130px}.set-two .set-static{width:47px;height:47px}.set-toolbar{flex-wrap:wrap}.set-toolbar>div:last-child{max-width:100%;width:100%;flex-direction:row;align-items:center}.set-toolbar>div:last-child select{flex:1}.set-actions>div:first-child{gap:5px}}
     /* SETS_CSS_END */
+    /* DIGITAL_CSS_START */
+    /* Digital world (scales game): reuses the sets-panel shell, only game-specific parts are styled here. */
+    .digital-panel [hidden]{display:none!important}
+    .activity-button[data-activity="digital"] span{line-height:1.15}
+    .dg-svg{display:block;width:min(100%,380px);height:auto;margin:0 auto;overflow:visible}
+    .dg-stage{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:26px;align-items:center}
+    .dg-controls{display:flex;flex-direction:column;gap:13px;min-width:0}
+    .dg-caption{display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;font-weight:bold;margin-top:8px}
+    .dg-caption svg{width:28px;height:28px}
+    .dg-status{font-size:13px;line-height:1.55;text-align:center;color:#6a7e79;min-height:3.1em}
+    .dg-tray{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+    .dg-weight{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:76px;min-height:78px;padding:8px 10px;background:#fff;border:1px solid #dce3d4;border-radius:14px;box-shadow:0 3px 0 #dce3d4;font-size:12px;font-weight:bold}
+    .dg-weight svg{width:38px;height:38px}
+    .dg-weight:active,.dg-option:active,.dg-pour button:active,.dg-card:active{transform:translateY(2px);box-shadow:0 1px 0 #dce3d4}
+    .dg-weight:disabled,.dg-option:disabled,.dg-pour button:disabled,.dg-card:disabled,.dg-prop:disabled{opacity:.6}
+    .dg-w{cursor:pointer;outline:none}.dg-w:focus-visible path{stroke:#286cea;stroke-width:3}
+    .dg-eq{text-align:center;font-size:15px;line-height:1.5}
+    .dg-question{text-align:center;font-size:15px;font-weight:bold;margin:2px 0 4px}
+    .dg-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    .dg-option{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:56px;padding:11px 8px;background:#fff;border:1px solid #dce3d4;border-radius:14px;box-shadow:0 3px 0 #dce3d4;font-size:15px;font-weight:bold}
+    .dg-option svg{width:44px;height:44px}
+    .dg-option.wrong,.dg-card.wrong{background:#fbf0d9;border-color:#ecd49a;color:#876b31}
+    .dg-option.right,.dg-card.right{background:#edf5e5;border-color:#a9d19b;color:var(--teal)}
+    .dg-pour{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+    .dg-pour button{min-height:52px;font-size:16px;font-weight:bold;background:#fff;border:1px solid #dce3d4;border-radius:13px;box-shadow:0 3px 0 #dce3d4}
+    .dg-props{display:flex;flex-direction:column;gap:9px}
+    .dg-prop{display:flex;align-items:center;gap:12px;text-align:left;background:#fff;border:1px solid #dce3d4;border-radius:14px;padding:11px 14px;min-height:54px;font-size:14px;line-height:1.4}
+    .dg-circle{flex:none;width:28px;height:28px;border-radius:50%;border:3px solid #a9b9ad;background:#fff}
+    .dg-prop[aria-pressed="true"] .dg-circle{background:var(--gold);border-color:#c98716}
+    .dg-prop.bad{border-color:#e4a595;background:#fdf1ee}
+    .dg-statement{font-size:18px;line-height:1.5;text-align:center;background:#f6f7ef;border-radius:16px;padding:16px 18px;margin-bottom:14px}
+    .dg-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    .dg-card{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px;background:#fff;border:1px solid #dce3d4;border-radius:16px;box-shadow:0 3px 0 #dce3d4;font-size:12px;font-weight:bold;line-height:1.3}
+    .dg-card .dg-svg{width:100%;max-width:150px}
+    .dg-card>span:first-child{flex:1;display:flex;align-items:center;justify-content:center;width:100%}
+    .dg-result{text-align:center;padding:10px 0 4px}
+    .dg-big-stars{display:flex;justify-content:center;gap:8px}.dg-big-stars .dg-star{width:50px;height:50px}
+    .dg-result p{margin-top:12px;font-size:15px;line-height:1.5;color:#6a7e79}
+    .dg-star{width:17px;height:17px;vertical-align:-3px;fill:#e8a12e;stroke:#e8a12e;stroke-width:1.2}.dg-star.off{fill:none;stroke:#c9cfbf}
+    @media(max-width:700px){.dg-stage{grid-template-columns:1fr;gap:14px}.dg-weight{min-width:68px}.dg-statement{font-size:16px}.dg-cards,.dg-options{gap:8px}}
+    @media(max-width:370px){.dg-options{grid-template-columns:1fr}.dg-cards{grid-template-columns:1fr}.dg-card .dg-svg{max-width:190px}}
+    /* DIGITAL_CSS_END */
   </style>
 </head>
 <body>
@@ -152,6 +194,7 @@
         <button class="activity-button" data-activity="lines" aria-pressed="false"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 16Q6 2 12 12T22 8M2 22l6-4 6 4 8-5"/></svg><span data-text="lines">Линије</span></button>
         <button class="activity-button" data-activity="stories" aria-pressed="false"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 19V7l9-5 9 5v12H3m6 0v-7h6v7M4 22q5-5 10 0t8-1"/></svg><span data-text="stories">Приче</span></button>
         <button class="activity-button" data-activity="sets" aria-pressed="false"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="10" ry="8"/><circle cx="8" cy="10" r="1.7"/><circle cx="15" cy="10" r="1.7"/><circle cx="11" cy="15" r="1.7"/></svg><span data-text="sets">Скупови</span></button>
+        <button class="activity-button" data-activity="digital" aria-pressed="false"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v17M5 20h14M12 6 4 8m8-2 8 2M4 8l-2 6a3 3 0 0 0 6 0Zm16 0-2 6a3 3 0 0 0 6 0Z"/></svg><span data-text="digital">Дигитални свет</span></button>
       </nav>
 
       <section id="puzzlePanel" class="game" aria-label="Геометријска слагалица">
@@ -256,11 +299,28 @@
         <details class="set-guide-details"><summary id="setGuideTitle">Мали подсетник</summary><div id="setGuide" class="set-guide"></div></details>
       </section>
 
+      <section id="digitalPanel" class="sets-panel digital-panel" aria-label="Дигитални свет" hidden>
+        <div class="set-toolbar">
+          <div><label id="dgGameLabel" for="dgGame">Игра</label><select id="dgGame" class="story-select"></select></div>
+          <div><label id="dgTaskLabel" for="dgTask">Вежба</label><select id="dgTask" class="story-select"></select></div>
+        </div>
+        <div class="set-task-top"><span id="dgKind" class="set-kind"></span><span id="dgRound" class="set-difficulty"></span></div>
+        <h2 id="dgPrompt" class="set-prompt" tabindex="-1"></h2>
+        <div id="dgBody" class="set-body"></div>
+        <p id="dgHintText" class="set-hint" hidden></p>
+        <p id="dgFeedback" class="set-feedback" role="status" aria-live="polite" aria-atomic="true" hidden></p>
+        <div class="set-actions">
+          <div><button id="dgReset" class="secondary">Испочетка</button><button id="dgHint" class="secondary">Мала помоћ</button></div>
+          <div><button id="dgCheck" class="next">Провери</button><button id="dgNext" class="next" hidden>Следећи задатак</button></div>
+        </div>
+        <div class="set-bottom"><p id="dgStats"></p></div>
+      </section>
+
       <section id="collectionSection" class="collection" aria-labelledby="collectionTitle"><div class="collection-title"><h2 id="collectionTitle" data-text="collection">Твоја збирка облика</h2><p id="collectionProgress">Откривено 0 од 15</p></div><div id="pictureLibrary" class="picture-library" hidden><div class="library-controls"><select id="pictureCategory" aria-label="Изабери тему"></select><button id="bodyFilter" class="secondary" aria-pressed="false">Са геометријским телима</button><p id="libraryCount" aria-live="polite"></p></div></div><div id="shapeList" class="shape-list"></div><button id="morePictures" class="secondary more-pictures" hidden>Прикажи још слика</button></section>
     </main>
     <footer><span data-text="footer">За радознале главице · Играј својим темпом</span><button id="helpButton" data-text="howTo">Како се игра?</button></footer>
   </div>
-  <dialog id="helpDialog"><h2 data-text="helpTitle">Хајде да склапамо!</h2><p data-text="help1">Превуци шарени део на одговарајуће место у облику. Када је довољно близу, сам ће се уклопити.</p><p data-text="help2">На телефону можеш и да додирнеш део, па његово место. Тастатуром изабери део помоћу Tab и Enter, а затим на исти начин изабери место.</p><p data-text="help3">„Лакше“ показује где иду делови. „Изазов“ има више делова и сакривене линије. За мали наговештај изабери „Мала помоћ“.</p><p data-text="help4">Кад сложиш све делове, открићеш име облика! Свој напредак можеш да видиш у збирци испод игре.</p><p data-text="help6"></p><p data-text="help7"></p><p data-text="help5"></p><button id="closeHelp" class="next" data-text="letsPlay">Хајде да играмо</button></dialog>
+  <dialog id="helpDialog"><h2 data-text="helpTitle">Хајде да склапамо!</h2><p data-text="help1">Превуци шарени део на одговарајуће место у облику. Када је довољно близу, сам ће се уклопити.</p><p data-text="help2">На телефону можеш и да додирнеш део, па његово место. Тастатуром изабери део помоћу Tab и Enter, а затим на исти начин изабери место.</p><p data-text="help3">„Лакше“ показује где иду делови. „Изазов“ има више делова и сакривене линије. За мали наговештај изабери „Мала помоћ“.</p><p data-text="help4">Кад сложиш све делове, открићеш име облика! Свој напредак можеш да видиш у збирци испод игре.</p><p data-text="help6"></p><p data-text="help7"></p><p data-text="help8"></p><p data-text="help5"></p><button id="closeHelp" class="next" data-text="letsPlay">Хајде да играмо</button></dialog>
   <script id="geometry-core">
   const ShapeGeometry = (() => {
     const TAU = Math.PI * 2;
@@ -1585,6 +1645,423 @@ const SetWorkshop = (() => {
   return {types,tasks,taskById,catalog,groupNames,colors,colorOf,art,esc,State,Deck,random,shuffle,relation,selectedAnswer,fingerprint,mount,pairLayout,sceneBackdrop};
 })();
   </script>
+  <script id="digital-core">
+/* Дигитални свет: игра "Ваге". Нове игре се додају у GAMES (на дну модула). */
+const DigitalWorkshop = (() => {
+  'use strict';
+  const NS = 'http://www.w3.org/2000/svg';
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const rand = n => Math.floor(Math.random() * n);
+  const shuffle = a => { const r = a.slice(); for (let i = r.length - 1; i > 0; i--) { const j = rand(i + 1); [r[i], r[j]] = [r[j], r[i]]; } return r; };
+  const pick = a => a[rand(a.length)];
+  const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+  const frame = f => (window.requestAnimationFrame ? window.requestAnimationFrame(f) : setTimeout(f, 16));
+  const svgEl = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+  let uid = 0;
+
+  /* ---------- Цртежи намирница (оригинални SVG, 48x48) ---------- */
+  const SHAPES = {
+    apple: '<path d="M24 15c-5-4-14-1-14 10 0 9 6 17 11 17 2 0 2-1 3-1s1 1 3 1c5 0 11-8 11-17 0-11-9-14-14-10z" fill="#e0483c"/><path d="M24 15c0-4 1-7 4-9" stroke="#6b4a2b" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M27 10c3-4 8-4 10-3-1 4-5 6-10 3z" fill="#4a9a4a"/>',
+    banana: '<path d="M7 13c1 15 13 27 34 22-2 5-9 9-17 8C12 41 3 29 7 13z" fill="#f2c94c" stroke="#b8901f" stroke-width="1.6" stroke-linejoin="round"/><path d="M7 13 5 8l5-1z" fill="#6b4a2b"/>',
+    lemon: '<ellipse cx="24" cy="26" rx="16" ry="12" fill="#f5d93a" stroke="#c9a921" stroke-width="1.6"/><path d="m8 26-4-2m36 2 4-2" stroke="#c9a921" stroke-width="2.6" stroke-linecap="round"/>',
+    egg: '<path d="M24 6C16 6 10 20 10 28a14 14 0 0 0 28 0C38 20 32 6 24 6z" fill="#fbf3e2" stroke="#d6c7a6" stroke-width="1.8"/>',
+    potato: '<path d="M7 28c-2-9 6-17 17-17 11 0 18 6 16 16-2 9-9 13-18 13-7 0-13-4-15-12z" fill="#b9854f" stroke="#8a5e30" stroke-width="1.6"/><circle cx="17" cy="24" r="1.6" fill="#8a5e30"/><circle cx="29" cy="32" r="1.6" fill="#8a5e30"/><circle cx="31" cy="21" r="1.4" fill="#8a5e30"/>',
+    carrot: '<path d="M34 13c3 3 4 6 3 8L14 42c-2 2-6-2-4-4L28 14c2-2 4-2 6-1z" fill="#f08a2e"/><path d="M33 13c-1-5 1-8 4-9m-4 9c3-3 7-4 10-3m-10 3c4 0 6 3 7 6" stroke="#3f9a4a" stroke-width="2.6" fill="none" stroke-linecap="round"/>',
+    pear: '<path d="M24 12c-4 0-6 4-6 8 0 4-8 8-8 15 0 6 6 9 14 9s14-3 14-9c0-7-8-11-8-15 0-4-2-8-6-8z" fill="#a8c94a" stroke="#7d9a2c" stroke-width="1.6"/><path d="M24 12c0-3 1-6 3-8" stroke="#6b4a2b" stroke-width="2.4" stroke-linecap="round" fill="none"/>',
+    tomato: '<circle cx="24" cy="27" r="15" fill="#e8442f"/><path d="m24 12 3 4 5-1-3 4 4 3-5 0-2 4-2-4-5 0 4-3-3-4 5 1z" fill="#3f9a4a"/>',
+    bread: '<path d="M6 28c0-9 8-16 18-16s18 7 18 16c0 4-2 8-5 8H11c-3 0-5-4-5-8z" fill="#d49a52" stroke="#a8702d" stroke-width="1.6"/><path d="m16 20 4 7m4-9 3 8m5-5 3 6" stroke="#f1d29a" stroke-width="2.2" stroke-linecap="round"/><rect x="9" y="35" width="30" height="5" rx="2" fill="#b57a35"/>',
+    milk: '<rect x="12" y="14" width="24" height="30" rx="2" fill="#fff" stroke="#9db4c9" stroke-width="1.8"/><path d="m12 14 6-9h12l6 9z" fill="#5aa7e0" stroke="#3b82c4" stroke-width="1.5" stroke-linejoin="round"/><rect x="16" y="24" width="16" height="10" rx="2" fill="#5aa7e0"/>',
+    flour: '<path d="M12 12c4-4 20-4 24 0l3 30H9z" fill="#f4ead2" stroke="#c9b88c" stroke-width="1.8" stroke-linejoin="round"/><rect x="15" y="22" width="18" height="12" rx="2" fill="#e9b949"/>',
+    melon: '<circle cx="24" cy="26" r="18" fill="#3f9a4a"/><path d="M14 12c3 10 3 22 0 30M24 8v36M34 12c-3 10-3 22 0 30" stroke="#2c7a38" stroke-width="2.4" fill="none"/>'
+  };
+  const ITEMS = [
+    {id:'lemon', name:'лимон', m:50}, {id:'egg', name:'јаје', m:50},
+    {id:'banana', name:'банана', m:100}, {id:'carrot', name:'шаргарепа', m:100},
+    {id:'apple', name:'јабука', m:150}, {id:'tomato', name:'парадајз', m:150},
+    {id:'pear', name:'крушка', m:200}, {id:'potato', name:'кромпир', m:250},
+    {id:'bread', name:'векна хлеба', m:500},
+    {id:'milk', name:'литар млека', m:1000}, {id:'flour', name:'пакет брашна', m:1000},
+    {id:'melon', name:'лубеница', m:2000}
+  ];
+  const INGREDIENTS = [
+    {name:'шећера', c:'#f0d9a6'}, {name:'брашна', c:'#efe6d2'}, {name:'какаа', c:'#6b3f26'},
+    {name:'соли', c:'#cfd8dc'}, {name:'цимета', c:'#b4531c'}
+  ];
+  const itemSVG = (id, size) => `<svg viewBox="0 0 48 48" width="${size}" height="${size}" aria-hidden="true">${SHAPES[id]}</svg>`;
+  const weightShape = (w, fs) => `<path d="M5 42h38l-5-22H10z" fill="#b8c0c9" stroke="#7a838f" stroke-width="1.6" stroke-linejoin="round"/><rect x="18" y="10" width="12" height="9" rx="4" fill="#8b95a1"/><text x="24" y="37" text-anchor="middle" font-size="${fs}" font-weight="700" fill="#2d3748">${w}</text>`;
+  const starSVG = on => `<svg class="dg-star${on ? '' : ' off'}" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.2 6.8 1-4.9 4.8 1.2 6.8-6.1-3.2-6.1 3.2 1.2-6.8L2.2 9.2l6.8-1Z"/></svg>`;
+
+  /* ---------- Пружина за природно кретање казаљке и греде ---------- */
+  function spring(x0, apply) {
+    let x = x0, v = 0, target = x0, running = false;
+    const step = () => {
+      v = (v + (target - x) * .1) * .78; x += v; apply(x);
+      if (Math.abs(v) < .02 && Math.abs(target - x) < .02) { x = target; apply(x); running = false; return; }
+      frame(step);
+    };
+    return {
+      set(t) { target = t; if (!running) { running = true; frame(step); } },
+      jump(t) { target = x = t; v = 0; apply(x); }
+    };
+  }
+
+  /* ---------- Вага са тасовима ---------- */
+  function makeBalance() {
+    const L = 130, PX = 180, PY = 72, H = 62;
+    const root = svgEl('svg', {viewBox: '0 0 360 250', class: 'dg-svg dg-bal', 'aria-hidden': 'true'});
+    const pan = side => `<g data-pan="${side}"><line x1="0" y1="0" x2="-46" y2="${H}" stroke="#6b8580" stroke-width="2"/><line x1="0" y1="0" x2="46" y2="${H}" stroke="#6b8580" stroke-width="2"/><path d="M-58 ${H}Q0 ${H + 36} 58 ${H}Z" fill="#4b6b64"/><g data-content transform="translate(0 ${H - 2})"></g></g>`;
+    root.innerHTML = `<ellipse cx="180" cy="236" rx="86" ry="11" fill="#dfe6d8"/><rect x="172" y="${PY}" width="16" height="166" rx="7" fill="#a9b9ad"/><line data-beam stroke="#4b6b64" stroke-width="9" stroke-linecap="round"/>${pan('l')}${pan('r')}<circle cx="${PX}" cy="${PY}" r="11" fill="#2f4f48"/>`;
+    const beam = root.querySelector('[data-beam]'), pl = root.querySelector('[data-pan="l"]'), pr = root.querySelector('[data-pan="r"]');
+    const cl = pl.querySelector('[data-content]'), cr = pr.querySelector('[data-content]');
+    function draw(deg) {
+      const r = deg * Math.PI / 180, lx = PX - L * Math.cos(r), ly = PY + L * Math.sin(r), rx = PX + L * Math.cos(r), ry = PY - L * Math.sin(r);
+      beam.setAttribute('x1', lx); beam.setAttribute('y1', ly); beam.setAttribute('x2', rx); beam.setAttribute('y2', ry);
+      pl.setAttribute('transform', `translate(${lx} ${ly})`); pr.setAttribute('transform', `translate(${rx} ${ry})`);
+    }
+    const sp = spring(0, draw); draw(0);
+    let removeFn = null;
+    const fire = e => { const g = e.target.closest('[data-w]'); if (g && removeFn) removeFn(Number(g.dataset.w)); };
+    root.addEventListener('click', fire);
+    root.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fire(e); } });
+    const itemIn = id => id ? `<g transform="translate(-28 -54) scale(1.17)">${SHAPES[id]}</g>` : '';
+    return {
+      el: root,
+      left(id) { cl.innerHTML = itemIn(id); },
+      rightItem(id) { cr.innerHTML = itemIn(id); },
+      weights(list) {
+        cr.innerHTML = list.map((w, i) => {
+          const row = Math.floor(i / 3), col = i % 3, n = Math.min(3, list.length - row * 3), x = (col - (n - 1) / 2) * 38, y = -row * 28;
+          return `<g class="dg-w" data-w="${i}" tabindex="0" role="button" aria-label="${w} g" transform="translate(${x - 18} ${y - 36}) scale(.75)">${weightShape(w, w < 100 ? 20 : 15)}</g>`;
+        }).join('');
+      },
+      onRemove(fn) { removeFn = fn; },
+      tilt(deg) { sp.set(deg); }
+    };
+  }
+
+  /* ---------- Вага са казаљком (0-2000 g, мала црта = 50 g) ---------- */
+  function makeDial() {
+    const root = svgEl('svg', {viewBox: '0 0 300 322', class: 'dg-svg dg-dial', 'aria-hidden': 'true'});
+    let ticks = '', labels = '';
+    for (let k = 0; k < 40; k++) {
+      const a = k * 9 * Math.PI / 180, len = k % 10 === 0 ? 16 : k % 2 === 0 ? 11 : 6, w = k % 10 === 0 ? 2.6 : k % 2 === 0 ? 1.8 : 1.2;
+      ticks += `<line x1="${(150 + Math.sin(a) * 100).toFixed(1)}" y1="${(190 - Math.cos(a) * 100).toFixed(1)}" x2="${(150 + Math.sin(a) * (100 - len)).toFixed(1)}" y2="${(190 - Math.cos(a) * (100 - len)).toFixed(1)}" stroke="#3b5651" stroke-width="${w}" stroke-linecap="round"/>`;
+    }
+    for (const k of [10, 20, 30]) {
+      const a = k * 9 * Math.PI / 180;
+      labels += `<text x="${(150 + Math.sin(a) * 66).toFixed(1)}" y="${(190 - Math.cos(a) * 66 + 5).toFixed(1)}" text-anchor="middle" font-size="14" font-weight="700" fill="#2f4f48">${k * 50}</text>`;
+    }
+    root.innerHTML = `<rect x="144" y="70" width="12" height="40" fill="#a9b9ad"/><ellipse cx="150" cy="64" rx="74" ry="9" fill="#a9b9ad"/><g data-item transform="translate(126 12)"></g><rect x="60" y="296" width="180" height="20" rx="8" fill="#a9b9ad"/><circle cx="150" cy="190" r="112" fill="#dfe6d8" stroke="#6b8580" stroke-width="3"/><circle cx="150" cy="190" r="102" fill="#fff"/>${ticks}${labels}<text x="150" y="124" text-anchor="middle" font-size="11" font-weight="700" fill="#2f4f48">2000</text><text x="150" y="138" text-anchor="middle" font-size="11" font-weight="700" fill="#2f4f48">0</text><text x="150" y="238" text-anchor="middle" font-size="13" font-weight="700" fill="#6a7e79">g</text><g data-needle transform="translate(150 190) rotate(0)"><path d="M-4 14 0-86 4 14z" fill="#e0483c"/><circle r="8" fill="#2f4f48"/></g>`;
+    const needle = root.querySelector('[data-needle]'), item = root.querySelector('[data-item]');
+    const sp = spring(0, deg => needle.setAttribute('transform', `translate(150 190) rotate(${deg})`));
+    return {
+      el: root,
+      item(id) { item.innerHTML = id ? SHAPES[id] : ''; },
+      set(m) { sp.set(m / 2000 * 360); },
+      zero() { sp.jump(0); }
+    };
+  }
+
+  /* ---------- Дигитална вага (тачност од 1 g) ---------- */
+  function makeDigital() {
+    const cid = 'dgclip' + (++uid);
+    const root = svgEl('svg', {viewBox: '0 104 300 146', class: 'dg-svg dg-dig', 'aria-hidden': 'true'});
+    root.innerHTML = `<defs><clipPath id="${cid}"><path d="M75 120Q150 170 225 120Z"/></clipPath></defs><rect x="30" y="150" width="240" height="92" rx="22" fill="#33504a"/><rect x="54" y="164" width="192" height="54" rx="9" fill="#cfeed4" stroke="#1f3a35" stroke-width="2"/><text data-num x="212" y="206" text-anchor="end" font-size="40" font-weight="700" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#17361f">0</text><text x="222" y="206" font-size="20" font-weight="700" fill="#17361f">g</text><circle cx="62" cy="232" r="4" fill="#9fb0a3"/><circle cx="78" cy="232" r="4" fill="#9fb0a3"/><path d="M75 120Q150 170 225 120Z" fill="#eef3ea"/><g clip-path="url(#${cid})"><rect data-pile x="60" y="145" width="180" height="0" fill="#efe6d2"/></g><path d="M75 120Q150 170 225 120Z" fill="none" stroke="#8fa396" stroke-width="3" stroke-linejoin="round"/><path d="M65 120h170" stroke="#8fa396" stroke-width="3" stroke-linecap="round"/>`;
+    const num = root.querySelector('[data-num]'), pile = root.querySelector('[data-pile]');
+    return {
+      el: root,
+      set(g, color) {
+        num.textContent = String(g);
+        const level = g > 0 ? Math.min(24, 5 + g * .7) : 0;
+        pile.setAttribute('y', 145 - level); pile.setAttribute('height', g > 0 ? level + 6 : 0);
+        if (color) pile.setAttribute('fill', color);
+      }
+    };
+  }
+  const SCALE_VIEWS = {tas: makeBalance, dial: makeDial, dig: makeDigital};
+  const SCALE_NAMES = {tas: 'Вага са тасовима', dial: 'Вага са казаљком', dig: 'Дигитална вага'};
+
+  /* ---------- Особине вага (обој кружиће) ---------- */
+  const PROPS = [
+    {id: 'teg', t: 'неопходни су тегови за мерење'},
+    {id: 'prec', t: 'изузетно прецизно мери мале количине намирница'},
+    {id: 'kaz', t: 'тежину показује казаљка на бројчанику'},
+    {id: 'ekr', t: 'тежину показују бројеви на екрану'},
+    {id: 'tas', t: 'има два таса'}
+  ];
+  const PROP_ANSWERS = {tas: ['teg', 'tas'], dial: ['kaz'], dig: ['prec', 'ekr']};
+  const STATEMENTS = [
+    {t: 'Тежину читам тако што видим докле је стигла казаљка.', a: 'dial'},
+    {t: 'На бројчанику пише 500, 1000 и 1500.', a: 'dial'},
+    {t: 'Са стране додајем тегове док се тасови не изравнају.', a: 'tas'},
+    {t: 'Имам два таса: на један ставим намирницу, а на други тегове.', a: 'tas'},
+    {t: 'Тежину одмах видим написану бројевима на екрану.', a: 'dig'},
+    {t: 'Треба ми тачно 8 g квасца за колач.', a: 'dig'}
+  ];
+
+  function numOptions(c, deltas, max) {
+    const s = new Set([c]);
+    for (const d of shuffle(deltas)) {
+      if (s.size >= 3) break;
+      const cand = shuffle([c + d, c - d]).find(v => v > 0 && v <= max && !s.has(v));
+      if (cand) s.add(cand);
+    }
+    for (let k = 50; s.size < 3; k += 50) for (const v of [c - k, c + k]) if (v > 0 && v <= max && s.size < 3 && !s.has(v)) s.add(v);
+    return shuffle([...s]);
+  }
+  function makePairs(n) {
+    const byMass = {}; ITEMS.forEach(i => (byMass[i.m] = byMass[i.m] || []).push(i));
+    const groups = Object.values(byMass).filter(g => g.length > 1), eq = rand(n), out = [];
+    for (let k = 0; k < n; k++) {
+      if (k === eq) out.push(shuffle(pick(groups)).slice(0, 2));
+      else { let a, b; do { a = pick(ITEMS); b = pick(ITEMS); } while (a.m === b.m); out.push([a, b]); }
+    }
+    return out;
+  }
+  function makeDigTargets() {
+    const ranges = [[4, 9], [10, 17], [18, 26], [27, 38], [39, 49]];
+    return ranges.map(([a, b]) => ({t: a + rand(b - a + 1), ing: pick(INGREDIENTS)}));
+  }
+
+  /* ---------- Вежбе ---------- */
+  const SCALE_TASKS = [
+    {id: 'tas', name: 'Тегови', kind: 'Вага са тасовима', rounds: 5, check: false,
+      make: () => shuffle(ITEMS.filter(i => i.m <= 750)).slice(0, 5).sort((a, b) => a.m - b.m),
+      hint: () => 'Прво стави највећи тег који не прелази тежину предмета, па додај мање тегове.'},
+    {id: 'dial', name: 'Казаљка', kind: 'Вага са казаљком', rounds: 5, check: false,
+      make: () => shuffle(ITEMS).slice(0, 5),
+      hint: () => 'Свака мала црта је 50 g. Велики бројеви су 500, 1000 и 1500.'},
+    {id: 'dig', name: 'Дигитална вага', kind: 'Дигитална вага', rounds: 5, check: true,
+      make: makeDigTargets,
+      hint: () => 'Прво сипај десетице (+10), па додај петице (+5) и јединице (+1).'},
+    {id: 'cmp', name: 'Која је тежа?', kind: 'Поређење', rounds: 5, check: false,
+      make: () => makePairs(5),
+      hint: () => 'Тежи тас увек иде доле, а лакши иде горе.'},
+    {id: 'props', name: 'Особине вага', kind: 'Особине вага', rounds: 3, check: true,
+      make: () => shuffle(['tas', 'dial', 'dig']),
+      hint: type => type === 'tas' ? 'Размисли шта стављамо на други тас.' : type === 'dial' ? 'Како ова вага показује тежину?' : 'Ова вага показује тежину на екрану, а мери и врло мале количине.'},
+    {id: 'which', name: 'Која вага?', kind: 'Која вага?', rounds: 5, check: false,
+      make: () => shuffle(STATEMENTS).slice(0, 5),
+      hint: () => 'Тасови и тегови, казаљка или екран? Размисли како вага показује тежину.'}
+  ];
+  const GAMES = [{id: 'scales', name: 'Ваге', tasks: SCALE_TASKS}];
+
+  function mount({translate = s => s, onSuccess = () => {}} = {}) {
+    const $ = id => document.getElementById(id), root = $('digitalPanel');
+    if (!root) throw new Error('Недостаје мени Дигитални свет.');
+    const T = s => translate(s), tr = s => esc(translate(s)), KEY = 'sklopi-digitalni-v1';
+    let saved = {}; try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch {}
+    const allTasks = GAMES.flatMap(g => g.tasks), best = {};
+    for (const t of allTasks) { const v = saved.best?.[t.id]; best[t.id] = Number.isInteger(v) && v >= 0 && v <= t.rounds ? v : 0; }
+    let gameId = GAMES.some(g => g.id === saved.game) ? saved.game : GAMES[0].id;
+    let taskId = allTasks.some(t => t.id === saved.task && GAMES.find(g => g.id === gameId).tasks.includes(t)) ? saved.task : GAMES.find(g => g.id === gameId).tasks[0].id;
+    let st = null, timers = [];
+    const game = () => GAMES.find(g => g.id === gameId), task = () => game().tasks.find(t => t.id === taskId);
+    const persist = () => { try { localStorage.setItem(KEY, JSON.stringify({game: gameId, task: taskId, best})); } catch {} };
+    const later = (fn, ms) => { const id = setTimeout(() => { timers = timers.filter(x => x !== id); fn(); }, ms); timers.push(id); };
+    const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
+    const say = (msg, good = false) => { const f = $('dgFeedback'); f.hidden = !msg; f.textContent = msg ? T(msg) : ''; f.classList.toggle('success', !!good); };
+    const hideHint = () => { $('dgHintText').hidden = true; };
+
+    function renderStats() {
+      const t = game().tasks, sum = t.reduce((s, x) => s + best[x.id], 0), max = t.reduce((s, x) => s + x.rounds, 0);
+      $('dgStats').innerHTML = `${starSVG(true)} ${tr('Звездице у игри')} „${tr(game().name)}“: <b>${sum} / ${max}</b> · ${tr('Звездица се добија кад тачно одговориш из првог покушаја.')}`;
+    }
+    function renderChrome() {
+      root.setAttribute('aria-label', T('Дигитални свет'));
+      $('dgGameLabel').textContent = T('Игра'); $('dgTaskLabel').textContent = T('Вежба');
+      $('dgGame').innerHTML = GAMES.map(g => `<option value="${g.id}"${g.id === gameId ? ' selected' : ''}>${tr(g.name)}</option>`).join('');
+      $('dgTask').innerHTML = game().tasks.map(t => `<option value="${t.id}"${t.id === taskId ? ' selected' : ''}>${tr(t.name)}</option>`).join('');
+      $('dgReset').textContent = T('Испочетка'); $('dgHint').textContent = T('Мала помоћ'); $('dgCheck').textContent = T('Провери');
+      renderStats();
+    }
+    function nextLabel() { $('dgNext').textContent = T(st && st.i >= st.rounds.length - 1 ? 'Види резултат' : 'Следећи задатак'); }
+
+    function startTask(id) {
+      const t = game().tasks.find(x => x.id === id) || game().tasks[0];
+      taskId = t.id; persist(); clearTimers();
+      st = {task: t, rounds: t.make(), i: 0, score: 0, counted: new Set(), missed: new Set(), solved: false, fin: false, checkFn: null};
+      $('dgTask').value = t.id; renderRound();
+    }
+
+    function renderRound() {
+      clearTimers(); hideHint(); say('');
+      const t = st.task; st.solved = false; st.checkFn = null; st.fin = false;
+      $('dgKind').textContent = T(t.kind);
+      $('dgRound').textContent = `${T('Задатак')} ${st.i + 1} / ${st.rounds.length}`;
+      $('dgCheck').hidden = !t.check;
+      $('dgReset').hidden = false; $('dgHint').hidden = false;
+      $('dgNext').hidden = !st.counted.has(st.i); nextLabel();
+      const body = $('dgBody'); body.replaceChildren();
+      const lock = () => body.querySelectorAll('button').forEach(b => { b.disabled = true; });
+      const c = {
+        body, later,
+        prompt: s => { $('dgPrompt').textContent = T(s); },
+        say,
+        fail: m => { if (st.solved) return; st.missed.add(st.i); say(m, false); },
+        markMiss: () => { st.missed.add(st.i); },
+        check: fn => { st.checkFn = fn; },
+        win: m => {
+          if (st.solved) return; st.solved = true;
+          if (!st.counted.has(st.i)) { st.counted.add(st.i); if (!st.missed.has(st.i)) st.score++; }
+          say(m, true); lock(); $('dgNext').hidden = false; nextLabel(); onSuccess(false);
+        }
+      };
+      ({tas: renderTas, dial: renderDial, dig: renderDig, cmp: renderCmp, props: renderProps, which: renderWhich})[t.id](st.rounds[st.i], c);
+      renderStats();
+    }
+
+    /* 1) Тегови: уравнотежи вагу, па прочитај колико тежи предмет */
+    function renderTas(it, c) {
+      c.prompt('Стави тегове на десни тас док се вага не уравнотежи.');
+      const W = [50, 100, 200, 500]; let ws = [], locked = false;
+      c.body.innerHTML = `<div class="dg-stage"><div><div data-bal></div><p class="dg-caption">${itemSVG(it.id, 28)}<span>${tr(it.name)}</span></p></div><div class="dg-controls"><p class="dg-status" data-status></p><div class="dg-tray" data-tray>${W.map(w => `<button type="button" class="dg-weight" data-add="${w}"><svg viewBox="0 0 48 48" aria-hidden="true">${weightShape(w, w < 100 ? 20 : 15)}</svg><span>${w} g</span></button>`).join('')}</div><button type="button" class="secondary" data-undo>${tr('Скини последњи тег')}</button><div data-ask hidden></div></div></div>`;
+      const bal = makeBalance(); c.body.querySelector('[data-bal]').append(bal.el); bal.left(it.id);
+      const status = c.body.querySelector('[data-status]'), tray = c.body.querySelector('[data-tray]'), undo = c.body.querySelector('[data-undo]'), ask = c.body.querySelector('[data-ask]');
+      const sum = () => ws.reduce((a, b) => a + b, 0);
+      function update() {
+        bal.weights(ws);
+        const d = it.m - sum();
+        bal.tilt(d === 0 ? 0 : Math.sign(d) * Math.min(14, 4 + Math.abs(d) / 30));
+        if (d > 0) status.textContent = T(ws.length ? 'Предмет је тежи. Додај још тегова.' : 'Додирни тег испод да га ставиш на десни тас.');
+        else if (d < 0) status.textContent = T('Тегови су претешки. Додирни тег на тасу да га скинеш.');
+        else onBalanced();
+      }
+      function onBalanced() {
+        locked = true; tray.querySelectorAll('button').forEach(b => { b.disabled = true; }); undo.disabled = true;
+        status.textContent = T('Вага је у равнотежи! Сада прочитај тегове.');
+        const sorted = [...ws].sort((a, b) => b - a), eq = sorted.join(' g + ') + ' g', total = sorted.join(' + ') + ' = ' + it.m + ' g';
+        ask.hidden = false;
+        ask.innerHTML = `<p class="dg-eq">${tr('Тегови на тасу')}: <b>${eq}</b></p><p class="dg-question">${tr('Колико грама тежи предмет?')}</p><div class="dg-options">${numOptions(it.m, [50, 100, 150], 5000).map(v => `<button type="button" class="dg-option" data-v="${v}">${v} g</button>`).join('')}</div>`;
+        ask.addEventListener('click', e => {
+          const b = e.target.closest('[data-v]'); if (!b || b.disabled) return;
+          if (Number(b.dataset.v) === it.m) { b.classList.add('right'); c.win('Тачно! ' + total + '.'); }
+          else { b.classList.add('wrong'); b.disabled = true; c.fail('Сабери бројеве на тегова са таса: ' + eq + '.'); }
+        });
+      }
+      tray.addEventListener('click', e => { const b = e.target.closest('[data-add]'); if (!b || locked) return; ws.push(Number(b.dataset.add)); update(); });
+      undo.addEventListener('click', () => { if (locked || !ws.length) return; ws.pop(); update(); });
+      bal.onRemove(i => { if (locked) return; ws.splice(i, 1); update(); });
+      update();
+    }
+
+    /* 2) Казаљка: прочитај колико показује */
+    function renderDial(it, c) {
+      c.prompt('Прочитај казаљку: колико грама тежи предмет на ваги?');
+      c.body.innerHTML = `<div class="dg-stage"><div data-dial></div><div class="dg-controls"><p class="dg-caption">${itemSVG(it.id, 28)}<span>${tr(it.name)}</span></p><p class="dg-status">${tr('Мале црте су по 50 g. Велики бројеви су 500, 1000 и 1500.')}</p><p class="dg-question">${tr('Колико показује казаљка?')}</p><div class="dg-options" data-opts>${numOptions(it.m, [50, 100, 500], 2000).map(v => `<button type="button" class="dg-option" data-v="${v}">${v} g</button>`).join('')}</div></div></div>`;
+      const d = makeDial(); c.body.querySelector('[data-dial]').append(d.el); d.item(it.id);
+      c.later(() => d.set(it.m), 350);
+      c.body.querySelector('[data-opts]').addEventListener('click', e => {
+        const b = e.target.closest('[data-v]'); if (!b || b.disabled) return;
+        if (Number(b.dataset.v) === it.m) { b.classList.add('right'); c.win(`Тачно! Казаљка показује ${it.m} g.`); }
+        else { b.classList.add('wrong'); b.disabled = true; c.fail('Погледај где се казаљка зауставила. Мале црте су по 50 g.'); }
+      });
+    }
+
+    /* 3) Дигитална вага: одмери тачно задату количину */
+    function renderDig(r, c) {
+      c.prompt(`Одмери тачно ${r.t} g ${r.ing.name}.`);
+      let cur = 0;
+      c.body.innerHTML = `<div class="dg-stage"><div data-dig></div><div class="dg-controls"><p class="dg-status">${tr('Дисплеј показује тежину тачно, чак и мале количине. Додај или скини док не добијеш тражену тежину, па провери.')}</p><div class="dg-pour" data-pour>${[['+1', 1], ['+5', 5], ['+10', 10], ['−1', -1]].map(([l, v]) => `<button type="button" data-v="${v}">${l} g</button>`).join('')}</div><button type="button" class="secondary" data-zero>${tr('Нула (празна посуда)')}</button></div></div>`;
+      const dg = makeDigital(); c.body.querySelector('[data-dig]').append(dg.el); dg.set(0, r.ing.c);
+      const upd = () => dg.set(cur, r.ing.c);
+      c.body.querySelector('[data-pour]').addEventListener('click', e => { const b = e.target.closest('[data-v]'); if (!b) return; cur = clamp(cur + Number(b.dataset.v), 0, 99); upd(); say(''); });
+      c.body.querySelector('[data-zero]').addEventListener('click', () => { cur = 0; upd(); say(''); });
+      c.check(() => {
+        if (cur === r.t) c.win(`Тачно! Дисплеј показује ${cur} g.`);
+        else c.fail(`Дисплеј показује ${cur} g, а треба ${r.t} g. ${cur < r.t ? 'Додај још.' : 'Скини мало.'}`);
+      });
+    }
+
+    /* 4) Која ствар је тежа: погоди, па види на ваги */
+    function renderCmp([a, b], c) {
+      c.prompt('Која ствар је тежа? Прво погоди, па види на ваги.');
+      c.body.innerHTML = `<div class="dg-stage"><div data-bal></div><div class="dg-controls"><p class="dg-status">${tr('Изабери тежу ствар или „исто“. Вага ће показати одговор.')}</p><div class="dg-options" data-opts><button type="button" class="dg-option" data-c="L">${itemSVG(a.id, 44)}<span>${tr(a.name)}</span></button><button type="button" class="dg-option" data-c="E"><span>${tr('Исто')}</span></button><button type="button" class="dg-option" data-c="R">${itemSVG(b.id, 44)}<span>${tr(b.name)}</span></button></div></div></div>`;
+      const bal = makeBalance(); c.body.querySelector('[data-bal]').append(bal.el);
+      const truth = a.m > b.m ? 'L' : a.m < b.m ? 'R' : 'E';
+      c.body.querySelector('[data-opts]').addEventListener('click', e => {
+        const btn = e.target.closest('[data-c]'); if (!btn || btn.disabled) return;
+        bal.left(a.id); bal.rightItem(b.id);
+        const d = a.m - b.m; bal.tilt(d === 0 ? 0 : Math.sign(d) * 12);
+        const ok = btn.dataset.c === truth;
+        if (!ok) c.markMiss();
+        btn.classList.add(ok ? 'right' : 'wrong');
+        const heavy = truth === 'L' ? a : b;
+        c.win((ok ? 'Тачно! ' : 'Скоро! ') + (truth === 'E' ? 'Исто су тешки, па је вага у равнотежи.' : `Тежи је тас са предметом: ${heavy.name}. Тај тас иде доле.`));
+      });
+    }
+
+    /* 5) Особине: обој кружиће */
+    function renderProps(type, c) {
+      c.prompt('Обој кружиће испред особина које ова вага има.');
+      c.body.innerHTML = `<div class="dg-stage"><div data-view></div><div class="dg-props" data-props>${shuffle(PROPS).map(p => `<button type="button" class="dg-prop" data-p="${p.id}" aria-pressed="false"><span class="dg-circle"></span><span>${tr(p.t)}</span></button>`).join('')}</div></div>`;
+      const view = SCALE_VIEWS[type](); c.body.querySelector('[data-view]').append(view.el);
+      const list = c.body.querySelector('[data-props]');
+      list.addEventListener('click', e => {
+        const b = e.target.closest('[data-p]'); if (!b || b.disabled) return;
+        list.querySelectorAll('.bad').forEach(x => x.classList.remove('bad'));
+        b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true'));
+      });
+      c.check(() => {
+        const want = PROP_ANSWERS[type]; let wrong = 0;
+        list.querySelectorAll('[data-p]').forEach(b => {
+          const bad = (b.getAttribute('aria-pressed') === 'true') !== want.includes(b.dataset.p);
+          b.classList.toggle('bad', bad); if (bad) wrong++;
+        });
+        if (!wrong) c.win('Тачно! Ово је ' + SCALE_NAMES[type].toLowerCase() + '.');
+        else c.fail('Нису сви кружићи тачни. Црвени су за поправку: додирни их и пробај поново.');
+      });
+    }
+
+    /* 6) Која вага одговара опису */
+    function renderWhich(s, c) {
+      c.prompt('Која вага одговара опису?');
+      c.body.innerHTML = `<p class="dg-statement">${tr(s.t)}</p><div class="dg-cards" data-cards>${['tas', 'dial', 'dig'].map(k => `<button type="button" class="dg-card" data-t="${k}"><span data-v="${k}"></span><span>${tr(SCALE_NAMES[k])}</span></button>`).join('')}</div>`;
+      c.body.querySelectorAll('[data-v]').forEach(h => h.append(SCALE_VIEWS[h.dataset.v]().el));
+      c.body.querySelector('[data-cards]').addEventListener('click', e => {
+        const b = e.target.closest('[data-t]'); if (!b || b.disabled) return;
+        if (b.dataset.t === s.a) { b.classList.add('right'); c.win('Тачно! ' + SCALE_NAMES[s.a] + '.'); }
+        else { b.classList.add('wrong'); b.disabled = true; c.fail('Није та. Размисли како вага показује тежину.'); }
+      });
+    }
+
+    /* ---------- Резултат серије ---------- */
+    function showResult() {
+      clearTimers(); hideHint(); say('');
+      const n = st.rounds.length, s = st.score;
+      if (!st.fin) { st.fin = true; if (s > best[st.task.id]) { best[st.task.id] = s; persist(); } onSuccess(true); }
+      $('dgKind').textContent = T(st.task.kind); $('dgRound').textContent = `${s} / ${n}`;
+      $('dgPrompt').textContent = T(s === n ? 'Одлично! Све из првог покушаја!' : s >= Math.ceil(n / 2) ? 'Браво! Баш добро ти иде.' : 'Добро си вежбао. Пробај поново!');
+      $('dgBody').innerHTML = `<div class="dg-result"><div class="dg-big-stars" role="img" aria-label="${s} / ${n}">${Array.from({length: n}, (_, i) => starSVG(i < s)).join('')}</div><p>${tr('Звездица добијаш кад тачно одговориш из првог покушаја. Нова серија има нове задатке.')}</p></div>`;
+      $('dgCheck').hidden = true; $('dgReset').hidden = true; $('dgHint').hidden = true;
+      $('dgNext').hidden = false; $('dgNext').textContent = T('Нова серија');
+      renderStats();
+    }
+
+    $('dgGame').addEventListener('change', e => { gameId = e.target.value; taskId = game().tasks[0].id; persist(); renderChrome(); startTask(taskId); });
+    $('dgTask').addEventListener('change', e => startTask(e.target.value));
+    $('dgReset').addEventListener('click', () => { if (st && !st.fin) renderRound(); });
+    $('dgHint').addEventListener('click', () => {
+      if (!st || st.fin) return;
+      const h = $('dgHintText'), txt = st.task.hint(st.rounds[st.i]);
+      h.textContent = T(txt); h.hidden = !h.hidden;
+    });
+    $('dgCheck').addEventListener('click', () => { if (st && st.checkFn && !st.solved) st.checkFn(); });
+    $('dgNext').addEventListener('click', () => {
+      if (!st) return;
+      if (st.fin) { startTask(taskId); return; }
+      if (!st.counted.has(st.i)) return;
+      st.i++;
+      if (st.i >= st.rounds.length) showResult(); else { renderRound(); $('dgPrompt').focus(); }
+    });
+
+    function render() { renderChrome(); if (!st) startTask(taskId); else if (st.fin) showResult(); else renderRound(); }
+    function cancel() { clearTimers(); }
+    return {render, cancel, startTask, get current() { return {st, best, gameId, taskId}; }};
+  }
+  return {GAMES, ITEMS, SHAPES, mount};
+})();
+  </script>
   <script id="game-app">
 (() => {
   'use strict';
@@ -1601,7 +2078,7 @@ const SetWorkshop = (() => {
   let bestQuiz=Number.isInteger(saved.bestQuiz)&&saved.bestQuiz>=0&&saved.bestQuiz<=10?saved.bestQuiz:0;
   let activity='figures',game,selected=null,drag=null,hintTimer=null,celebrationTimer=null,quiz=null,pictureCount=0;
   const sessions={},quizDeck=new Deck(questionBank);let pictureDeck=new Deck(themes.map((_,i)=>i)),pictureCategory='all',onlyBodies=false,pictureLimit=24;
-  const words={brand:'Склопи облик',brandSub:'Мала игра. Велика радозналост.',eyebrow:'ИСТРАЖИ • СКЛОПИ • НАУЧИ',heading:'Који се облик крије?',subtitle:'Споји делове и откриј његово име.',noRush:'Без журбе.',figures:'Облици',solids:'Тела',pictures:'Направи слику',stories:'Приче',sets:'Скупови',lines:'Линије',lineConnectNote:'Сваки спој две тачке је дуж. Више дужи могу да направе изломљену линију. Прати бројеве!',quiz:'Квиз знања',easy:'Лакше',hard:'Изазов',boardLabel:'ТВОЈ ОБЛИК',piecesTitle:'Твоји делови',instruction:'Превуци део на његово место. Можеш и да додирнеш део, па место у облику.',hint:'Мала помоћ',restart:'Испочетка',mix:'Друга слика',preview:'Погледај циљ',collection:'Твоја збирка облика',footer:'За радознале главице · Играј својим темпом',howTo:'Како се игра?',helpTitle:'Седам начина да учиш!',help1:'У „Облицима“ и „Телима“ споји шарене делове. Када све склопиш, испод цртежа појављују се назив и објашњење.',help2:'Превуци део мишем или прстом. Можеш и да додирнеш део, па место. Тастатуром бирај део и место помоћу Tab и Enter. Бројеви ти помажу да пратиш делове.',help3:'У „Направи слику“ од облика састави ракету, ауто и још 108 слика. Коцке, квадри, лопте, ваљци, купе и пирамиде такође постају делови слике. Изабери тему испод игре. „Друга слика“ мења задатак. „Лакше“ показује делове, а „Изазов“ скрива њихове линије.',help7:'У „Скуповима“ имаш 1.200 задатака. Групиши по врсти, боји и величини. Означи чланове, именуј и преброј скупове. Повежи једнак број, допуни скуп, обоји по правилу и споји маме са младунцима. Можеш да превлачиш или да користиш два додира. „Мала помоћ“ подсећа на правило. Бирај врсту и тежину, а напредак се памти на овом уређају.',help5:'У „Линијама“ препознај праву, дуж, криве и изломљене линије. Споји тачке мишем, прстом или тастатуром. У „Нацртај“ комбинуј дужи и криве, затварај облике и прави своје цртеже. „Други задатак“ мења комбинацију.',help6:'У „Причама“ нацртај линију лево, десно, изнад, испод, поред, унутра, на предмету или између другара. Споји децу са балонима и змајевима. „Додај линију“ омогућава да изабереш линију и њено место. У „Топлим домовима“ сложи кутије, кућице, дупља и гнезда за 12 животиња. Мењај јесен и зиму.',help4:'Квиз има 10 измешаних питања. Изабери један одговор; ако погрешиш, пробај поново. Резултат броји одговоре тачне из првог покушаја. Писмо и звук мењаш горе.',quizNote:'Без журбе и без казне за грешке. Свако питање можеш да покушаш поново.',letsPlay:'Хајде да играмо',quizHint:'Наговештај',newQuiz:'Нови квиз',quizNext:'Следеће питање'};
+  const words={brand:'Склопи облик',brandSub:'Мала игра. Велика радозналост.',eyebrow:'ИСТРАЖИ • СКЛОПИ • НАУЧИ',heading:'Који се облик крије?',subtitle:'Споји делове и откриј његово име.',noRush:'Без журбе.',figures:'Облици',solids:'Тела',pictures:'Направи слику',stories:'Приче',sets:'Скупови',digital:'Дигитални свет',lines:'Линије',lineConnectNote:'Сваки спој две тачке је дуж. Више дужи могу да направе изломљену линију. Прати бројеве!',quiz:'Квиз знања',easy:'Лакше',hard:'Изазов',boardLabel:'ТВОЈ ОБЛИК',piecesTitle:'Твоји делови',instruction:'Превуци део на његово место. Можеш и да додирнеш део, па место у облику.',hint:'Мала помоћ',restart:'Испочетка',mix:'Друга слика',preview:'Погледај циљ',collection:'Твоја збирка облика',footer:'За радознале главице · Играј својим темпом',howTo:'Како се игра?',helpTitle:'Осам начина да учиш!',help1:'У „Облицима“ и „Телима“ споји шарене делове. Када све склопиш, испод цртежа појављују се назив и објашњење.',help2:'Превуци део мишем или прстом. Можеш и да додирнеш део, па место. Тастатуром бирај део и место помоћу Tab и Enter. Бројеви ти помажу да пратиш делове.',help3:'У „Направи слику“ од облика састави ракету, ауто и још 108 слика. Коцке, квадри, лопте, ваљци, купе и пирамиде такође постају делови слике. Изабери тему испод игре. „Друга слика“ мења задатак. „Лакше“ показује делове, а „Изазов“ скрива њихове линије.',help7:'У „Скуповима“ имаш 1.200 задатака. Групиши по врсти, боји и величини. Означи чланове, именуј и преброј скупове. Повежи једнак број, допуни скуп, обоји по правилу и споји маме са младунцима. Можеш да превлачиш или да користиш два додира. „Мала помоћ“ подсећа на правило. Бирај врсту и тежину, а напредак се памти на овом уређају.',help8:'У „Дигиталном свету“ су ваге. Стави тегове на вагу са тасовима и прочитај колико предмет тежи, прочитај казаљку, одмери тачну количину на дигиталној ваги, погоди која ствар је тежа и обој особине сваке ваге. Звездицу добијаш кад тачно одговориш из првог покушаја.',help5:'У „Линијама“ препознај праву, дуж, криве и изломљене линије. Споји тачке мишем, прстом или тастатуром. У „Нацртај“ комбинуј дужи и криве, затварај облике и прави своје цртеже. „Други задатак“ мења комбинацију.',help6:'У „Причама“ нацртај линију лево, десно, изнад, испод, поред, унутра, на предмету или између другара. Споји децу са балонима и змајевима. „Додај линију“ омогућава да изабереш линију и њено место. У „Топлим домовима“ сложи кутије, кућице, дупља и гнезда за 12 животиња. Мењај јесен и зиму.',help4:'Квиз има 10 измешаних питања. Изабери један одговор; ако погрешиш, пробај поново. Резултат броји одговоре тачне из првог покушаја. Писмо и звук мењаш горе.',quizNote:'Без журбе и без казне за грешке. Свако питање можеш да покушаш поново.',letsPlay:'Хајде да играмо',quizHint:'Наговештај',newQuiz:'Нови квиз',quizNext:'Следеће питање'};
   const t=s=>language==='lat'?s.replace(/[А-Яа-яЂђЈјЉљЊњЋћЏџ]/g,c=>translit[c]||c):s;
   const labelFor=s=>{const result=t(s.name);return language==='lat'?result.toLocaleUpperCase('sr-Latn'):result};
   const checkIcon='<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>';
@@ -1613,10 +2090,10 @@ const SetWorkshop = (() => {
   function renderSound(){const desc=soundEnabled?'Искључи звук':'Укључи звук';$('soundButton').setAttribute('aria-label',t(desc));$('soundButton').title=t(desc);$('soundButton').setAttribute('aria-pressed',String(soundEnabled));$('soundButton').innerHTML=`<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 4 6 8H3v8h3l5 4Z"/>${soundEnabled?'<path d="M15 8c3 2 3 6 0 8m3-12c5 4 5 12 0 16"/>':'<path d="m16 9 5 6m0-6-5 6"/>'}</svg>`}
   function renderLanguage(){document.documentElement.lang=language==='lat'?'sr-Latn':'sr-Cyrl';document.title=t('Склопи облик · Облици, линије и скупови');document.querySelectorAll('[data-text]').forEach(el=>el.textContent=t(words[el.dataset.text]||''));$('cyr').setAttribute('aria-pressed',String(language==='cyr'));$('lat').setAttribute('aria-pressed',String(language==='lat'));document.querySelector('.language').setAttribute('aria-label',t('Писмо'));document.querySelector('.difficulty').setAttribute('aria-label',t('Тежина'));$('activityNav').setAttribute('aria-label',t('Изабери игру'));$('board').setAttribute('aria-label',t('Постави делове на њихова места'));$('pieces').setAttribute('aria-label',t('Делови слагалице'));$('quizPanel').setAttribute('aria-label',t('Квиз знања'));$('goalImage').setAttribute('aria-label',t('Пример готове слике'));$('puzzlePanel').setAttribute('aria-label',t('Геометријска слагалица'));renderSound();renderContext()}
   function renderContext(){
-    const contexts={sets:['Истражи свет скупова!','1.200 задатака: групиши, преброј, повежи, допуни и обоји. Учи својим темпом.',''],stories:['Нацртај своју малу причу!','72 задатка са линијама и положајем. Сагради и топле домове за 12 другара.',''],figures:['Који се облик крије?','Споји делове и откриј његово име.','ТВОЈ ОБЛИК'],solids:['Истражи свет тела!','Сложи слику тела. Научи како изгледа и где га срећеш.','ТВОЈЕ ТЕЛО'],pictures:['Шта ћемо направити?','110 различитих креација од облика и тела. Изабери тему или насумичну слику!','ТВОЈА СЛИКА'],lines:['Линија по линија — твоја креација!','Препознај, споји и нацртај. Истражи отворене и затворене линије и направи своје облике.',''],quiz:['Покажи шта знаш!','Десет питања о облицима и телима. Размисли и изабери одговор.','']};
+    const contexts={digital:['Откриј дигитални свет!','Вагај, читај казаљку и одмеравај на екрану. Упознај три врсте ваге.',''],sets:['Истражи свет скупова!','1.200 задатака: групиши, преброј, повежи, допуни и обоји. Учи својим темпом.',''],stories:['Нацртај своју малу причу!','72 задатка са линијама и положајем. Сагради и топле домове за 12 другара.',''],figures:['Који се облик крије?','Споји делове и откриј његово име.','ТВОЈ ОБЛИК'],solids:['Истражи свет тела!','Сложи слику тела. Научи како изгледа и где га срећеш.','ТВОЈЕ ТЕЛО'],pictures:['Шта ћемо направити?','110 различитих креација од облика и тела. Изабери тему или насумичну слику!','ТВОЈА СЛИКА'],lines:['Линија по линија — твоја креација!','Препознај, споји и нацртај. Истражи отворене и затворене линије и направи своје облике.',''],quiz:['Покажи шта знаш!','Десет питања о облицима и телима. Размисли и изабери одговор.','']};
     const c=contexts[activity];document.querySelector('[data-text="heading"]').textContent=t(c[0]);document.querySelector('[data-text="subtitle"]').textContent=t(c[1]);document.querySelector('[data-text="boardLabel"]').textContent=t(c[2]);
     document.querySelectorAll('[data-activity]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.activity===activity)));
-    $('puzzlePanel').hidden=['quiz','lines','stories','sets'].includes(activity);$('quizPanel').hidden=activity!=='quiz';$('linesPanel').hidden=activity!=='lines';$('storyPanel').hidden=activity!=='stories';$('setsPanel').hidden=activity!=='sets';$('linesPanel').setAttribute('aria-label',t('Игре са линијама'));$('collectionSection').hidden=['quiz','lines','stories','sets'].includes(activity);$('mixButton').hidden=activity!=='pictures';$('picturePreview').hidden=activity!=='pictures';
+    $('puzzlePanel').hidden=['quiz','lines','stories','sets','digital'].includes(activity);$('quizPanel').hidden=activity!=='quiz';$('linesPanel').hidden=activity!=='lines';$('storyPanel').hidden=activity!=='stories';$('setsPanel').hidden=activity!=='sets';$('digitalPanel').hidden=activity!=='digital';$('linesPanel').setAttribute('aria-label',t('Игре са линијама'));$('collectionSection').hidden=['quiz','lines','stories','sets','digital'].includes(activity);$('mixButton').hidden=activity!=='pictures';$('picturePreview').hidden=activity!=='pictures';
     $('topProgress').textContent=`${discovered.size} / ${shapes.length}`;document.querySelector('.collection-counter').title=t('Упознати облици и тела');
   }
   function currentIndices(){return shapes.map((s,i)=>({s,i})).filter(({s})=>s.category===(activity==='solids'?'solid':'figure')).map(({i})=>i)}
@@ -1705,15 +2182,16 @@ const SetWorkshop = (() => {
   $('quizHintButton').addEventListener('click',()=>{quiz.hintShown=!quiz.hintShown;renderQuiz()});
   $('quizNextButton').addEventListener('click',()=>{if(!quiz.next())return;if(quiz.complete){bestQuiz=Math.max(bestQuiz,quiz.score);persist();chime(true);celebrate()}renderQuiz();if(quiz.complete)$('quizNewButton').focus();else{ $('quizQuestion').focus()}});
   $('quizNewButton').addEventListener('click',()=>{startQuiz();$('quizQuestion').focus()});
-  function switchActivity(next){if(!['figures','solids','pictures','quiz','lines','stories','sets'].includes(next)||next===activity)return;stopEffects();lineWorkshop.cancel();storyWorkshop.cancel();setWorkshop.cancel();activity=next;selected=null;renderContext();if(next==='sets')setWorkshop.render();else if(next==='stories')storyWorkshop.render();else if(next==='lines')lineWorkshop.render();else if(next==='quiz'){if(!quiz)startQuiz();else renderQuiz()}else if(sessions[next]){game=sessions[next];renderPuzzle(true);message(game.complete?'Браво! Настави са следећим задатком.':'Настави тамо где си стао.')}else if(next==='pictures')nextPicture();else startLevel(next==='solids'?15:0)}
+  function switchActivity(next){if(!['figures','solids','pictures','quiz','lines','stories','sets','digital'].includes(next)||next===activity)return;stopEffects();lineWorkshop.cancel();storyWorkshop.cancel();setWorkshop.cancel();digitalWorkshop.cancel();activity=next;selected=null;renderContext();if(next==='digital')digitalWorkshop.render();else if(next==='sets')setWorkshop.render();else if(next==='stories')storyWorkshop.render();else if(next==='lines')lineWorkshop.render();else if(next==='quiz'){if(!quiz)startQuiz();else renderQuiz()}else if(sessions[next]){game=sessions[next];renderPuzzle(true);message(game.complete?'Браво! Настави са следећим задатком.':'Настави тамо где си стао.')}else if(next==='pictures')nextPicture();else startLevel(next==='solids'?15:0)}
   $('activityNav').addEventListener('click',e=>{const button=e.target.closest('[data-activity]');if(button)switchActivity(button.dataset.activity)});
-  function changeLanguage(next){stopEffects();lineWorkshop.cancel();storyWorkshop.cancel();setWorkshop.cancel();language=next;persist();renderLanguage();if(activity==='sets')setWorkshop.render();else if(activity==='stories')storyWorkshop.render();else if(activity==='lines')lineWorkshop.render();else if(activity==='quiz')renderQuiz();else{renderPuzzle(true);message(game.complete?'Одлично! Све је склопљено.':'Изабери део. Хајде да откријемо шта се крије!')}}
+  function changeLanguage(next){stopEffects();lineWorkshop.cancel();storyWorkshop.cancel();setWorkshop.cancel();digitalWorkshop.cancel();language=next;persist();renderLanguage();if(activity==='digital')digitalWorkshop.render();else if(activity==='sets')setWorkshop.render();else if(activity==='stories')storyWorkshop.render();else if(activity==='lines')lineWorkshop.render();else if(activity==='quiz')renderQuiz();else{renderPuzzle(true);message(game.complete?'Одлично! Све је склопљено.':'Изабери део. Хајде да откријемо шта се крије!')}}
   $('cyr').addEventListener('click',()=>changeLanguage('cyr'));$('lat').addEventListener('click',()=>changeLanguage('lat'));
   $('soundButton').addEventListener('click',()=>{soundEnabled=!soundEnabled;readyAudio();renderSound();persist();if(soundEnabled)chime()});$('helpButton').addEventListener('click',()=>{$('helpDialog').showModal()});$('closeHelp').addEventListener('click',()=>{$('helpDialog').close()});
-  window.addEventListener('blur',cancelDrag);window.addEventListener('resize',cancelDrag);document.addEventListener('keydown',e=>{if(e.key==='Escape'){cancelDrag();clearHint();selected=null;lineWorkshop.cancel();storyWorkshop.cancel();setWorkshop.cancel();if(!['quiz','lines','stories','sets'].includes(activity))renderPieces()}});
+  window.addEventListener('blur',cancelDrag);window.addEventListener('resize',cancelDrag);document.addEventListener('keydown',e=>{if(e.key==='Escape'){cancelDrag();clearHint();selected=null;lineWorkshop.cancel();storyWorkshop.cancel();setWorkshop.cancel();digitalWorkshop.cancel();if(!['quiz','lines','stories','sets','digital'].includes(activity))renderPieces()}});
   const lineWorkshop=LineWorkshop.mount({translate:t,onSuccess:finish=>{readyAudio();chime(finish)}});
   const storyWorkshop=StoryWorkshop.mount({translate:t,onSuccess:finish=>{readyAudio();chime(finish)}});
   const setWorkshop=SetWorkshop.mount({translate:t,onSuccess:finish=>{readyAudio();chime(finish)}});
+  const digitalWorkshop=DigitalWorkshop.mount({translate:t,onSuccess:finish=>{readyAudio();chime(finish)}});
   renderLanguage();startLevel(0);
 })();
 
