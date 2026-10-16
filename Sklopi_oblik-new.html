@@ -165,6 +165,19 @@
     .dg-star{width:17px;height:17px;vertical-align:-3px;fill:#e8a12e;stroke:#e8a12e;stroke-width:1.2}.dg-star.off{fill:none;stroke:#c9cfbf}
     @media(max-width:700px){.dg-stage{grid-template-columns:1fr;gap:14px}.dg-weight{min-width:68px}.dg-statement{font-size:16px}.dg-cards,.dg-options{gap:8px}}
     @media(max-width:370px){.dg-options{grid-template-columns:1fr}.dg-cards{grid-template-columns:1fr}.dg-card .dg-svg{max-width:190px}}
+    .dg-keypad{display:flex;flex-direction:column;gap:12px;align-items:center}
+    .dg-write{min-width:130px;height:74px;display:flex;align-items:center;justify-content:center;font-size:46px;font-weight:800;background:#fff;border:3px solid #dce3d4;border-radius:18px;padding:0 26px;letter-spacing:2px}
+    .dg-write.empty{color:#c0c9bb}
+    .dg-keys{display:grid;grid-template-columns:repeat(3,minmax(0,78px));gap:10px}
+    .dg-keys button{display:flex;align-items:center;justify-content:center;min-height:58px;font-size:26px;font-weight:bold;background:#fff;border:1px solid #dce3d4;border-radius:14px;box-shadow:0 3px 0 #dce3d4}
+    .dg-keys button svg{width:28px;height:28px}
+    .dg-keys button:active{transform:translateY(2px);box-shadow:0 1px 0 #dce3d4}
+    .dg-keys button:disabled,.dg-bigbtn:disabled{opacity:.6}
+    .dg-keys .dg-ok{background:var(--teal);color:#fff;border-color:#19584b;box-shadow:0 3px 0 #19584b}
+    .dg-bigbtn{display:flex;align-items:center;justify-content:center;gap:12px;min-height:66px;padding:10px 16px;font-size:22px;font-weight:bold;color:#7a5a12;background:#fff4d6;border:2px solid #f0cf84;border-radius:18px;box-shadow:0 4px 0 #e5c36e}
+    .dg-bigbtn:active{transform:translateY(2px);box-shadow:0 2px 0 #e5c36e}
+    .dg-target{font-size:30px;text-align:center;background:#f6f7ef;border-radius:18px;padding:12px}
+    .dg-target b{font-size:44px;color:var(--teal)}
     /* DIGITAL_CSS_END */
   </style>
 </head>
@@ -1646,7 +1659,8 @@ const SetWorkshop = (() => {
 })();
   </script>
   <script id="digital-core">
-/* Дигитални свет: игра "Ваге". Нове игре се додају у GAMES (на дну модула). */
+/* Дигитални свет: игра "Ваге" за први разред. Ваге мере у килограмима, бројеви су од 1 до 10.
+   Нема сабирања: дете чита број, броји тегове или кесе и УПИСУЈЕ број. Нове игре се додају у GAMES. */
 const DigitalWorkshop = (() => {
   'use strict';
   const NS = 'http://www.w3.org/2000/svg';
@@ -1657,9 +1671,9 @@ const DigitalWorkshop = (() => {
   const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
   const frame = f => (window.requestAnimationFrame ? window.requestAnimationFrame(f) : setTimeout(f, 16));
   const svgEl = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
-  let uid = 0;
+  let uid = 0, UNIT = 'кг';
 
-  /* ---------- Цртежи намирница (оригинални SVG, 48x48) ---------- */
+  /* ---------- Цртежи (оригинални SVG, 48x48) ---------- */
   const SHAPES = {
     apple: '<path d="M24 15c-5-4-14-1-14 10 0 9 6 17 11 17 2 0 2-1 3-1s1 1 3 1c5 0 11-8 11-17 0-11-9-14-14-10z" fill="#e0483c"/><path d="M24 15c0-4 1-7 4-9" stroke="#6b4a2b" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M27 10c3-4 8-4 10-3-1 4-5 6-10 3z" fill="#4a9a4a"/>',
     banana: '<path d="M7 13c1 15 13 27 34 22-2 5-9 9-17 8C12 41 3 29 7 13z" fill="#f2c94c" stroke="#b8901f" stroke-width="1.6" stroke-linejoin="round"/><path d="M7 13 5 8l5-1z" fill="#6b4a2b"/>',
@@ -1674,18 +1688,22 @@ const DigitalWorkshop = (() => {
     flour: '<path d="M12 12c4-4 20-4 24 0l3 30H9z" fill="#f4ead2" stroke="#c9b88c" stroke-width="1.8" stroke-linejoin="round"/><rect x="15" y="22" width="18" height="12" rx="2" fill="#e9b949"/>',
     melon: '<circle cx="24" cy="26" r="18" fill="#3f9a4a"/><path d="M14 12c3 10 3 22 0 30M24 8v36M34 12c-3 10-3 22 0 30" stroke="#2c7a38" stroke-width="2.4" fill="none"/>'
   };
-  const ITEMS = [
-    {id:'lemon', name:'лимон', m:50}, {id:'egg', name:'јаје', m:50},
-    {id:'banana', name:'банана', m:100}, {id:'carrot', name:'шаргарепа', m:100},
-    {id:'apple', name:'јабука', m:150}, {id:'tomato', name:'парадајз', m:150},
-    {id:'pear', name:'крушка', m:200}, {id:'potato', name:'кромпир', m:250},
-    {id:'bread', name:'векна хлеба', m:500},
-    {id:'milk', name:'литар млека', m:1000}, {id:'flour', name:'пакет брашна', m:1000},
-    {id:'melon', name:'лубеница', m:2000}
+  /* Кесе са воћем и поврћем: свака кеса у игри тежи цео број килограма. */
+  const bagShape = c => `<path d="M9 18C14 10 34 10 39 18L43 43H5Z" fill="#f1e3c4" stroke="#c9b27c" stroke-width="1.8" stroke-linejoin="round"/><path d="m17 15-3-8 10 4 10-4-3 8" fill="#d9c28c" stroke="#c9b27c" stroke-width="1.6" stroke-linejoin="round"/><circle cx="18" cy="27" r="6" fill="${c}"/><circle cx="30" cy="27" r="6" fill="${c}"/><circle cx="24" cy="35" r="6" fill="${c}"/>`;
+  const BAGS = [
+    {id: 'b_apple', name: 'кеса јабука', c: '#e0483c'}, {id: 'b_potato', name: 'кеса кромпира', c: '#b9854f'},
+    {id: 'b_carrot', name: 'кеса шаргарепа', c: '#f08a2e'}, {id: 'b_lemon', name: 'кеса лимуна', c: '#f5d93a'},
+    {id: 'b_pear', name: 'кеса крушака', c: '#a8c94a'}
   ];
-  const INGREDIENTS = [
-    {name:'шећера', c:'#f0d9a6'}, {name:'брашна', c:'#efe6d2'}, {name:'какаа', c:'#6b3f26'},
-    {name:'соли', c:'#cfd8dc'}, {name:'цимета', c:'#b4531c'}
+  BAGS.forEach(b => { SHAPES[b.id] = bagShape(b.c); });
+  const ITEMS = [  /* само за поређење "која је тежа": m је само за редослед */
+    {id: 'lemon', name: 'лимон', m: 50}, {id: 'egg', name: 'јаје', m: 50},
+    {id: 'banana', name: 'банана', m: 100}, {id: 'carrot', name: 'шаргарепа', m: 100},
+    {id: 'apple', name: 'јабука', m: 150}, {id: 'tomato', name: 'парадајз', m: 150},
+    {id: 'pear', name: 'крушка', m: 200}, {id: 'potato', name: 'кромпир', m: 250},
+    {id: 'bread', name: 'векна хлеба', m: 500},
+    {id: 'milk', name: 'литар млека', m: 1000}, {id: 'flour', name: 'пакет брашна', m: 1000},
+    {id: 'melon', name: 'лубеница', m: 2000}
   ];
   const itemSVG = (id, size) => `<svg viewBox="0 0 48 48" width="${size}" height="${size}" aria-hidden="true">${SHAPES[id]}</svg>`;
   const weightShape = (w, fs) => `<path d="M5 42h38l-5-22H10z" fill="#b8c0c9" stroke="#7a838f" stroke-width="1.6" stroke-linejoin="round"/><rect x="18" y="10" width="12" height="9" rx="4" fill="#8b95a1"/><text x="24" y="37" text-anchor="middle" font-size="${fs}" font-weight="700" fill="#2d3748">${w}</text>`;
@@ -1731,7 +1749,7 @@ const DigitalWorkshop = (() => {
       weights(list) {
         cr.innerHTML = list.map((w, i) => {
           const row = Math.floor(i / 3), col = i % 3, n = Math.min(3, list.length - row * 3), x = (col - (n - 1) / 2) * 38, y = -row * 28;
-          return `<g class="dg-w" data-w="${i}" tabindex="0" role="button" aria-label="${w} g" transform="translate(${x - 18} ${y - 36}) scale(.75)">${weightShape(w, w < 100 ? 20 : 15)}</g>`;
+          return `<g class="dg-w" data-w="${i}" tabindex="0" role="button" aria-label="${w} ${esc(UNIT)}" transform="translate(${x - 18} ${y - 36}) scale(.75)">${weightShape(w, 22)}</g>`;
         }).join('');
       },
       onRemove(fn) { removeFn = fn; },
@@ -1739,47 +1757,66 @@ const DigitalWorkshop = (() => {
     };
   }
 
-  /* ---------- Вага са казаљком (0-2000 g, мала црта = 50 g) ---------- */
+  /* ---------- Вага са казаљком: 0 до 10 килограма, сваки број је написан ---------- */
   function makeDial() {
+    const ang = m => -150 + m * 30;
     const root = svgEl('svg', {viewBox: '0 0 300 322', class: 'dg-svg dg-dial', 'aria-hidden': 'true'});
     let ticks = '', labels = '';
-    for (let k = 0; k < 40; k++) {
-      const a = k * 9 * Math.PI / 180, len = k % 10 === 0 ? 16 : k % 2 === 0 ? 11 : 6, w = k % 10 === 0 ? 2.6 : k % 2 === 0 ? 1.8 : 1.2;
-      ticks += `<line x1="${(150 + Math.sin(a) * 100).toFixed(1)}" y1="${(190 - Math.cos(a) * 100).toFixed(1)}" x2="${(150 + Math.sin(a) * (100 - len)).toFixed(1)}" y2="${(190 - Math.cos(a) * (100 - len)).toFixed(1)}" stroke="#3b5651" stroke-width="${w}" stroke-linecap="round"/>`;
+    for (let m = 0; m <= 10; m++) {
+      const a = ang(m) * Math.PI / 180, s = Math.sin(a), c = Math.cos(a);
+      ticks += `<line x1="${(150 + s * 100).toFixed(1)}" y1="${(190 - c * 100).toFixed(1)}" x2="${(150 + s * 85).toFixed(1)}" y2="${(190 - c * 85).toFixed(1)}" stroke="#3b5651" stroke-width="3" stroke-linecap="round"/>`;
+      labels += `<text x="${(150 + s * 64).toFixed(1)}" y="${(190 - c * 64 + 7).toFixed(1)}" text-anchor="middle" font-size="21" font-weight="800" fill="#2f4f48">${m}</text>`;
     }
-    for (const k of [10, 20, 30]) {
-      const a = k * 9 * Math.PI / 180;
-      labels += `<text x="${(150 + Math.sin(a) * 66).toFixed(1)}" y="${(190 - Math.cos(a) * 66 + 5).toFixed(1)}" text-anchor="middle" font-size="14" font-weight="700" fill="#2f4f48">${k * 50}</text>`;
-    }
-    root.innerHTML = `<rect x="144" y="70" width="12" height="40" fill="#a9b9ad"/><ellipse cx="150" cy="64" rx="74" ry="9" fill="#a9b9ad"/><g data-item transform="translate(126 12)"></g><rect x="60" y="296" width="180" height="20" rx="8" fill="#a9b9ad"/><circle cx="150" cy="190" r="112" fill="#dfe6d8" stroke="#6b8580" stroke-width="3"/><circle cx="150" cy="190" r="102" fill="#fff"/>${ticks}${labels}<text x="150" y="124" text-anchor="middle" font-size="11" font-weight="700" fill="#2f4f48">2000</text><text x="150" y="138" text-anchor="middle" font-size="11" font-weight="700" fill="#2f4f48">0</text><text x="150" y="238" text-anchor="middle" font-size="13" font-weight="700" fill="#6a7e79">g</text><g data-needle transform="translate(150 190) rotate(0)"><path d="M-4 14 0-86 4 14z" fill="#e0483c"/><circle r="8" fill="#2f4f48"/></g>`;
+    root.innerHTML = `<rect x="144" y="70" width="12" height="40" fill="#a9b9ad"/><ellipse cx="150" cy="64" rx="74" ry="9" fill="#a9b9ad"/><g data-item transform="translate(126 12)"></g><rect x="60" y="296" width="180" height="20" rx="8" fill="#a9b9ad"/><circle cx="150" cy="190" r="112" fill="#dfe6d8" stroke="#6b8580" stroke-width="3"/><circle cx="150" cy="190" r="102" fill="#fff"/>${ticks}${labels}<text data-unit x="150" y="236" text-anchor="middle" font-size="15" font-weight="800" fill="#6a7e79">${esc(UNIT)}</text><g data-needle transform="translate(150 190) rotate(${ang(0)})"><path d="M-4 14 0-86 4 14z" fill="#e0483c"/><circle r="8" fill="#2f4f48"/></g>`;
     const needle = root.querySelector('[data-needle]'), item = root.querySelector('[data-item]');
-    const sp = spring(0, deg => needle.setAttribute('transform', `translate(150 190) rotate(${deg})`));
+    const sp = spring(ang(0), deg => needle.setAttribute('transform', `translate(150 190) rotate(${deg})`));
     return {
       el: root,
       item(id) { item.innerHTML = id ? SHAPES[id] : ''; },
-      set(m) { sp.set(m / 2000 * 360); },
-      zero() { sp.jump(0); }
+      set(m) { root.dataset.value = String(m); sp.set(ang(m)); },
+      zero() { sp.jump(ang(0)); }
     };
   }
 
-  /* ---------- Дигитална вага (тачност од 1 g) ---------- */
+  /* ---------- Дигитална вага: на ваги стоје кесе од по 1 кг, а на екрану пише број ---------- */
   function makeDigital() {
-    const cid = 'dgclip' + (++uid);
-    const root = svgEl('svg', {viewBox: '0 104 300 146', class: 'dg-svg dg-dig', 'aria-hidden': 'true'});
-    root.innerHTML = `<defs><clipPath id="${cid}"><path d="M75 120Q150 170 225 120Z"/></clipPath></defs><rect x="30" y="150" width="240" height="92" rx="22" fill="#33504a"/><rect x="54" y="164" width="192" height="54" rx="9" fill="#cfeed4" stroke="#1f3a35" stroke-width="2"/><text data-num x="212" y="206" text-anchor="end" font-size="40" font-weight="700" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#17361f">0</text><text x="222" y="206" font-size="20" font-weight="700" fill="#17361f">g</text><circle cx="62" cy="232" r="4" fill="#9fb0a3"/><circle cx="78" cy="232" r="4" fill="#9fb0a3"/><path d="M75 120Q150 170 225 120Z" fill="#eef3ea"/><g clip-path="url(#${cid})"><rect data-pile x="60" y="145" width="180" height="0" fill="#efe6d2"/></g><path d="M75 120Q150 170 225 120Z" fill="none" stroke="#8fa396" stroke-width="3" stroke-linejoin="round"/><path d="M65 120h170" stroke="#8fa396" stroke-width="3" stroke-linecap="round"/>`;
-    const num = root.querySelector('[data-num]'), pile = root.querySelector('[data-pile]');
+    const root = svgEl('svg', {viewBox: '0 62 300 188', class: 'dg-svg dg-dig', 'aria-hidden': 'true'});
+    root.innerHTML = `<rect x="30" y="150" width="240" height="92" rx="22" fill="#33504a"/><rect x="48" y="138" width="204" height="14" rx="7" fill="#a9b9ad"/><g data-items></g><rect x="54" y="164" width="192" height="54" rx="9" fill="#cfeed4" stroke="#1f3a35" stroke-width="2"/><text data-num x="200" y="206" text-anchor="end" font-size="42" font-weight="700" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#17361f">0</text><text data-unit x="210" y="206" font-size="20" font-weight="700" fill="#17361f">${esc(UNIT)}</text><circle cx="62" cy="232" r="4" fill="#9fb0a3"/><circle cx="78" cy="232" r="4" fill="#9fb0a3"/>`;
+    const num = root.querySelector('[data-num]'), items = root.querySelector('[data-items]');
     return {
       el: root,
-      set(g, color) {
-        num.textContent = String(g);
-        const level = g > 0 ? Math.min(24, 5 + g * .7) : 0;
-        pile.setAttribute('y', 145 - level); pile.setAttribute('height', g > 0 ? level + 6 : 0);
-        if (color) pile.setAttribute('fill', color);
+      set(n, bagId) {
+        root.dataset.value = String(n); num.textContent = String(n);
+        let html = '';
+        for (let i = 0; i < n && bagId; i++) {
+          const row = Math.floor(i / 5), col = i % 5;
+          html += `<g transform="translate(${60 + col * 36} ${106 - row * 32}) scale(.667)">${SHAPES[bagId]}</g>`;
+        }
+        items.innerHTML = html;
       }
     };
   }
   const SCALE_VIEWS = {tas: makeBalance, dial: makeDial, dig: makeDigital};
   const SCALE_NAMES = {tas: 'Вага са тасовима', dial: 'Вага са казаљком', dig: 'Дигитална вага'};
+
+  /* ---------- Тастатура: дете УПИСУЈЕ број (0-10) ---------- */
+  function keypad(onSubmit) {
+    const el = document.createElement('div'); el.className = 'dg-keypad';
+    const back = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11v12H9l-6-6zm3 3 6 6m0-6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const ok = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    el.innerHTML = `<div class="dg-write empty" data-write aria-live="polite">?</div><div class="dg-keys">${[1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => `<button type="button" data-k="${n}">${n}</button>`).join('')}<button type="button" data-k="back" aria-label="Обриши">${back}</button><button type="button" data-k="0">0</button><button type="button" class="dg-ok" data-k="ok" aria-label="Потврди">${ok}</button></div>`;
+    const write = el.querySelector('[data-write]'); let v = '';
+    const draw = () => { write.textContent = v || '?'; write.classList.toggle('empty', !v); };
+    el.addEventListener('click', e => {
+      const b = e.target.closest('[data-k]'); if (!b || b.disabled) return;
+      const k = b.dataset.k;
+      if (k === 'ok') { if (v) onSubmit(Number(v)); return; }
+      if (k === 'back') v = v.slice(0, -1);
+      else if (v.length < 2) v = (v + k).replace(/^0+(?=\d)/, '');
+      draw();
+    });
+    return {el, clear() { v = ''; draw(); }};
+  }
 
   /* ---------- Особине вага (обој кружиће) ---------- */
   const PROPS = [
@@ -1792,23 +1829,15 @@ const DigitalWorkshop = (() => {
   const PROP_ANSWERS = {tas: ['teg', 'tas'], dial: ['kaz'], dig: ['prec', 'ekr']};
   const STATEMENTS = [
     {t: 'Тежину читам тако што видим докле је стигла казаљка.', a: 'dial'},
-    {t: 'На бројчанику пише 500, 1000 и 1500.', a: 'dial'},
+    {t: 'На бројчанику су бројеви од 0 до 10.', a: 'dial'},
     {t: 'Са стране додајем тегове док се тасови не изравнају.', a: 'tas'},
     {t: 'Имам два таса: на један ставим намирницу, а на други тегове.', a: 'tas'},
     {t: 'Тежину одмах видим написану бројевима на екрану.', a: 'dig'},
-    {t: 'Треба ми тачно 8 g квасца за колач.', a: 'dig'}
+    {t: 'Кад додам још једну кесу, број на екрану постане већи.', a: 'dig'}
   ];
 
-  function numOptions(c, deltas, max) {
-    const s = new Set([c]);
-    for (const d of shuffle(deltas)) {
-      if (s.size >= 3) break;
-      const cand = shuffle([c + d, c - d]).find(v => v > 0 && v <= max && !s.has(v));
-      if (cand) s.add(cand);
-    }
-    for (let k = 50; s.size < 3; k += 50) for (const v of [c - k, c + k]) if (v > 0 && v <= max && s.size < 3 && !s.has(v)) s.add(v);
-    return shuffle([...s]);
-  }
+  const pickNums = (a, b, k) => shuffle(Array.from({length: b - a + 1}, (_, i) => a + i)).slice(0, k).sort((x, y) => x - y);
+  const withBag = n => ({n, bag: pick(BAGS)});
   function makePairs(n) {
     const byMass = {}; ITEMS.forEach(i => (byMass[i.m] = byMass[i.m] || []).push(i));
     const groups = Object.values(byMass).filter(g => g.length > 1), eq = rand(n), out = [];
@@ -1818,28 +1847,27 @@ const DigitalWorkshop = (() => {
     }
     return out;
   }
-  function makeDigTargets() {
-    const ranges = [[4, 9], [10, 17], [18, 26], [27, 38], [39, 49]];
-    return ranges.map(([a, b]) => ({t: a + rand(b - a + 1), ing: pick(INGREDIENTS)}));
-  }
 
-  /* ---------- Вежбе ---------- */
+  /* ---------- Вежбе (од најлакше ка тежој) ---------- */
   const SCALE_TASKS = [
-    {id: 'tas', name: 'Тегови', kind: 'Вага са тасовима', rounds: 5, check: false,
-      make: () => shuffle(ITEMS.filter(i => i.m <= 750)).slice(0, 5).sort((a, b) => a.m - b.m),
-      hint: () => 'Прво стави највећи тег који не прелази тежину предмета, па додај мање тегове.'},
+    {id: 'read', name: 'Екран', kind: 'Дигитална вага', rounds: 5, check: false,
+      make: () => pickNums(1, 10, 5).map(withBag),
+      hint: () => 'Погледај велики број на екрану. Толико килограма вага мери.'},
     {id: 'dial', name: 'Казаљка', kind: 'Вага са казаљком', rounds: 5, check: false,
-      make: () => shuffle(ITEMS).slice(0, 5),
-      hint: () => 'Свака мала црта је 50 g. Велики бројеви су 500, 1000 и 1500.'},
-    {id: 'dig', name: 'Дигитална вага', kind: 'Дигитална вага', rounds: 5, check: true,
-      make: makeDigTargets,
-      hint: () => 'Прво сипај десетице (+10), па додај петице (+5) и јединице (+1).'},
+      make: () => pickNums(1, 10, 5).map(withBag),
+      hint: () => 'Прати црвену казаљку до броја.'},
+    {id: 'meas', name: 'Одмери', kind: 'Одмеравање', rounds: 5, check: true,
+      make: () => pickNums(2, 10, 5).map(withBag),
+      hint: () => 'Додирни „+1“ и броји кесе наглас док не стигнеш до траженог броја.'},
+    {id: 'tas', name: 'Тегови', kind: 'Вага са тасовима', rounds: 5, check: false,
+      make: () => pickNums(1, 6, 5).map(withBag),
+      hint: () => 'Додај тегове један по један и броји их.'},
     {id: 'cmp', name: 'Која је тежа?', kind: 'Поређење', rounds: 5, check: false,
       make: () => makePairs(5),
       hint: () => 'Тежи тас увек иде доле, а лакши иде горе.'},
     {id: 'props', name: 'Особине вага', kind: 'Особине вага', rounds: 3, check: true,
       make: () => shuffle(['tas', 'dial', 'dig']),
-      hint: type => type === 'tas' ? 'Размисли шта стављамо на други тас.' : type === 'dial' ? 'Како ова вага показује тежину?' : 'Ова вага показује тежину на екрану, а мери и врло мале количине.'},
+      hint: type => type === 'tas' ? 'Размисли шта стављамо на други тас.' : type === 'dial' ? 'Како ова вага показује тежину?' : 'Ова вага показује тежину на екрану.'},
     {id: 'which', name: 'Која вага?', kind: 'Која вага?', rounds: 5, check: false,
       make: () => shuffle(STATEMENTS).slice(0, 5),
       hint: () => 'Тасови и тегови, казаљка или екран? Размисли како вага показује тежину.'}
@@ -1849,14 +1877,14 @@ const DigitalWorkshop = (() => {
   function mount({translate = s => s, onSuccess = () => {}} = {}) {
     const $ = id => document.getElementById(id), root = $('digitalPanel');
     if (!root) throw new Error('Недостаје мени Дигитални свет.');
-    const T = s => translate(s), tr = s => esc(translate(s)), KEY = 'sklopi-digitalni-v1';
+    const T = s => translate(s), tr = s => esc(translate(s)), KEY = 'sklopi-digitalni-v2';
     let saved = {}; try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch {}
     const allTasks = GAMES.flatMap(g => g.tasks), best = {};
     for (const t of allTasks) { const v = saved.best?.[t.id]; best[t.id] = Number.isInteger(v) && v >= 0 && v <= t.rounds ? v : 0; }
     let gameId = GAMES.some(g => g.id === saved.game) ? saved.game : GAMES[0].id;
     let taskId = allTasks.some(t => t.id === saved.task && GAMES.find(g => g.id === gameId).tasks.includes(t)) ? saved.task : GAMES.find(g => g.id === gameId).tasks[0].id;
     let st = null, timers = [];
-    const game = () => GAMES.find(g => g.id === gameId), task = () => game().tasks.find(t => t.id === taskId);
+    const game = () => GAMES.find(g => g.id === gameId);
     const persist = () => { try { localStorage.setItem(KEY, JSON.stringify({game: gameId, task: taskId, best})); } catch {} };
     const later = (fn, ms) => { const id = setTimeout(() => { timers = timers.filter(x => x !== id); fn(); }, ms); timers.push(id); };
     const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
@@ -1865,9 +1893,10 @@ const DigitalWorkshop = (() => {
 
     function renderStats() {
       const t = game().tasks, sum = t.reduce((s, x) => s + best[x.id], 0), max = t.reduce((s, x) => s + x.rounds, 0);
-      $('dgStats').innerHTML = `${starSVG(true)} ${tr('Звездице у игри')} „${tr(game().name)}“: <b>${sum} / ${max}</b> · ${tr('Звездица се добија кад тачно одговориш из првог покушаја.')}`;
+      $('dgStats').innerHTML = `${starSVG(true)} ${tr('Звездице у игри')} „${tr(game().name)}“: <b>${sum} / ${max}</b> · ${tr('Звездица се добија кад погодиш из првог пута.')}`;
     }
     function renderChrome() {
+      UNIT = T('кг');
       root.setAttribute('aria-label', T('Дигитални свет'));
       $('dgGameLabel').textContent = T('Игра'); $('dgTaskLabel').textContent = T('Вежба');
       $('dgGame').innerHTML = GAMES.map(g => `<option value="${g.id}"${g.id === gameId ? ' selected' : ''}>${tr(g.name)}</option>`).join('');
@@ -1885,7 +1914,7 @@ const DigitalWorkshop = (() => {
     }
 
     function renderRound() {
-      clearTimers(); hideHint(); say('');
+      clearTimers(); hideHint(); say(''); UNIT = T('кг');
       const t = st.task; st.solved = false; st.checkFn = null; st.fin = false;
       $('dgKind').textContent = T(t.kind);
       $('dgRound').textContent = `${T('Задатак')} ${st.i + 1} / ${st.rounds.length}`;
@@ -1907,73 +1936,83 @@ const DigitalWorkshop = (() => {
           say(m, true); lock(); $('dgNext').hidden = false; nextLabel(); onSuccess(false);
         }
       };
-      ({tas: renderTas, dial: renderDial, dig: renderDig, cmp: renderCmp, props: renderProps, which: renderWhich})[t.id](st.rounds[st.i], c);
+      ({read: renderRead, dial: renderDial, meas: renderMeas, tas: renderTas, cmp: renderCmp, props: renderProps, which: renderWhich})[t.id](st.rounds[st.i], c);
       renderStats();
     }
 
-    /* 1) Тегови: уравнотежи вагу, па прочитај колико тежи предмет */
-    function renderTas(it, c) {
-      c.prompt('Стави тегове на десни тас док се вага не уравнотежи.');
-      const W = [50, 100, 200, 500]; let ws = [], locked = false;
-      c.body.innerHTML = `<div class="dg-stage"><div><div data-bal></div><p class="dg-caption">${itemSVG(it.id, 28)}<span>${tr(it.name)}</span></p></div><div class="dg-controls"><p class="dg-status" data-status></p><div class="dg-tray" data-tray>${W.map(w => `<button type="button" class="dg-weight" data-add="${w}"><svg viewBox="0 0 48 48" aria-hidden="true">${weightShape(w, w < 100 ? 20 : 15)}</svg><span>${w} g</span></button>`).join('')}</div><button type="button" class="secondary" data-undo>${tr('Скини последњи тег')}</button><div data-ask hidden></div></div></div>`;
-      const bal = makeBalance(); c.body.querySelector('[data-bal]').append(bal.el); bal.left(it.id);
-      const status = c.body.querySelector('[data-status]'), tray = c.body.querySelector('[data-tray]'), undo = c.body.querySelector('[data-undo]'), ask = c.body.querySelector('[data-ask]');
-      const sum = () => ws.reduce((a, b) => a + b, 0);
+    /* 1) Екран: прочитај број и упиши га */
+    function renderRead(r, c) {
+      c.prompt('Који број пише на екрану?');
+      c.body.innerHTML = `<div class="dg-stage"><div data-view></div><div class="dg-controls"><p class="dg-status">${tr('Свака кеса тежи 1 кг.')}</p><div data-pad></div></div></div>`;
+      const dg = makeDigital(); c.body.querySelector('[data-view]').append(dg.el); dg.set(r.n, r.bag.id);
+      const pad = keypad(v => {
+        if (v === r.n) c.win(`Тачно! На екрану пише ${r.n}.`);
+        else { c.fail('Није тај број. Погледај екран и пробај поново.'); pad.clear(); }
+      });
+      c.body.querySelector('[data-pad]').append(pad.el);
+    }
+
+    /* 2) Казаљка: прочитај број на који показује и упиши га */
+    function renderDial(r, c) {
+      c.prompt('На који број показује казаљка?');
+      c.body.innerHTML = `<div class="dg-stage"><div data-view></div><div class="dg-controls"><p class="dg-caption">${itemSVG(r.bag.id, 28)}<span>${tr(r.bag.name)}</span></p><p class="dg-status">${tr('Упиши број на који показује црвена казаљка.')}</p><div data-pad></div></div></div>`;
+      const d = makeDial(); c.body.querySelector('[data-view]').append(d.el); d.item(r.bag.id);
+      c.later(() => d.set(r.n), 350);
+      const pad = keypad(v => {
+        if (v === r.n) c.win(`Тачно! Вага показује ${r.n} ${UNIT}.`);
+        else { c.fail('Није тај број. Погледај где је казаљка и пробај поново.'); pad.clear(); }
+      });
+      c.body.querySelector('[data-pad]').append(pad.el);
+    }
+
+    /* 3) Одмери: додај кесе (по 1 кг) док на екрану не буде тражени број */
+    function renderMeas(r, c) {
+      c.prompt(`Одмери ${r.n} ${UNIT}.`);
+      let cur = 0;
+      c.body.innerHTML = `<div class="dg-stage"><div data-view></div><div class="dg-controls"><p class="dg-target">${tr('Треба')}: <b>${r.n}</b> ${esc(UNIT)}</p><button type="button" class="dg-bigbtn" data-plus>${itemSVG(r.bag.id, 34)}<span>+1 ${esc(UNIT)}</span></button><button type="button" class="secondary" data-minus>−1</button><p class="dg-status">${tr('Додај кесе док број на екрану не буде тражени. Затим притисни „Провери“.')}</p></div></div>`;
+      const dg = makeDigital(); c.body.querySelector('[data-view]').append(dg.el); dg.set(0, r.bag.id);
+      const upd = () => dg.set(cur, r.bag.id);
+      c.body.querySelector('[data-plus]').addEventListener('click', () => { cur = clamp(cur + 1, 0, 10); upd(); say(''); });
+      c.body.querySelector('[data-minus]').addEventListener('click', () => { cur = clamp(cur - 1, 0, 10); upd(); say(''); });
+      c.check(() => {
+        if (cur === r.n) c.win(`Тачно! На екрану је ${cur} ${UNIT}.`);
+        else c.fail(`На екрану је ${cur}, а треба ${r.n}. ${cur < r.n ? 'Додај још.' : 'Скини једну.'}`);
+      });
+    }
+
+    /* 4) Тегови: сваки тег је 1 кг. Додај тегове док се вага не уравнотежи, па упиши колико их је */
+    function renderTas(r, c) {
+      c.prompt('Стави тегове док се вага не уравнотежи.');
+      let ws = [], locked = false;
+      c.body.innerHTML = `<div class="dg-stage"><div><div data-bal></div><p class="dg-caption">${itemSVG(r.bag.id, 28)}<span>${tr(r.bag.name)}</span></p></div><div class="dg-controls"><p class="dg-status" data-status></p><button type="button" class="dg-bigbtn" data-plus><svg viewBox="0 0 48 48" width="34" height="34" aria-hidden="true">${weightShape(1, 22)}</svg><span>${tr('+1 тег')} (1 ${esc(UNIT)})</span></button><button type="button" class="secondary" data-minus>${tr('Скини један тег')}</button><div data-ask hidden></div></div></div>`;
+      const bal = makeBalance(); c.body.querySelector('[data-bal]').append(bal.el); bal.left(r.bag.id);
+      const status = c.body.querySelector('[data-status]'), minus = c.body.querySelector('[data-minus]'), plus = c.body.querySelector('[data-plus]'), ask = c.body.querySelector('[data-ask]');
       function update() {
         bal.weights(ws);
-        const d = it.m - sum();
-        bal.tilt(d === 0 ? 0 : Math.sign(d) * Math.min(14, 4 + Math.abs(d) / 30));
-        if (d > 0) status.textContent = T(ws.length ? 'Предмет је тежи. Додај још тегова.' : 'Додирни тег испод да га ставиш на десни тас.');
-        else if (d < 0) status.textContent = T('Тегови су претешки. Додирни тег на тасу да га скинеш.');
+        const d = r.n - ws.length;
+        bal.tilt(d === 0 ? 0 : Math.sign(d) * Math.min(14, 5 + Math.abs(d) * 3));
+        if (d > 0) status.textContent = T(ws.length ? 'Кеса је тежа. Додај још тегова.' : 'Додирни „+1 тег“ да ставиш тег на десни тас.');
+        else if (d < 0) status.textContent = T('Претешко! Скини један тег.');
         else onBalanced();
       }
       function onBalanced() {
-        locked = true; tray.querySelectorAll('button').forEach(b => { b.disabled = true; }); undo.disabled = true;
-        status.textContent = T('Вага је у равнотежи! Сада прочитај тегове.');
-        const sorted = [...ws].sort((a, b) => b - a), eq = sorted.join(' g + ') + ' g', total = sorted.join(' + ') + ' = ' + it.m + ' g';
+        locked = true; plus.disabled = true; minus.disabled = true;
+        status.textContent = T('Вага је у равнотежи!');
         ask.hidden = false;
-        ask.innerHTML = `<p class="dg-eq">${tr('Тегови на тасу')}: <b>${eq}</b></p><p class="dg-question">${tr('Колико грама тежи предмет?')}</p><div class="dg-options">${numOptions(it.m, [50, 100, 150], 5000).map(v => `<button type="button" class="dg-option" data-v="${v}">${v} g</button>`).join('')}</div>`;
-        ask.addEventListener('click', e => {
-          const b = e.target.closest('[data-v]'); if (!b || b.disabled) return;
-          if (Number(b.dataset.v) === it.m) { b.classList.add('right'); c.win('Тачно! ' + total + '.'); }
-          else { b.classList.add('wrong'); b.disabled = true; c.fail('Сабери бројеве на тегова са таса: ' + eq + '.'); }
+        ask.innerHTML = `<p class="dg-question">${tr('Колико тегова има на тасу? Упиши број.')}</p><div data-pad></div>`;
+        const pad = keypad(v => {
+          if (v === r.n) c.win(`Тачно! ${r.n} тегова по 1 ${UNIT} је ${r.n} ${UNIT}.`);
+          else { c.fail('Пребројај тегове на десном тасу и пробај поново.'); pad.clear(); }
         });
+        ask.querySelector('[data-pad]').append(pad.el);
       }
-      tray.addEventListener('click', e => { const b = e.target.closest('[data-add]'); if (!b || locked) return; ws.push(Number(b.dataset.add)); update(); });
-      undo.addEventListener('click', () => { if (locked || !ws.length) return; ws.pop(); update(); });
+      plus.addEventListener('click', () => { if (locked) return; ws.push(1); update(); });
+      minus.addEventListener('click', () => { if (locked || !ws.length) return; ws.pop(); update(); });
       bal.onRemove(i => { if (locked) return; ws.splice(i, 1); update(); });
       update();
     }
 
-    /* 2) Казаљка: прочитај колико показује */
-    function renderDial(it, c) {
-      c.prompt('Прочитај казаљку: колико грама тежи предмет на ваги?');
-      c.body.innerHTML = `<div class="dg-stage"><div data-dial></div><div class="dg-controls"><p class="dg-caption">${itemSVG(it.id, 28)}<span>${tr(it.name)}</span></p><p class="dg-status">${tr('Мале црте су по 50 g. Велики бројеви су 500, 1000 и 1500.')}</p><p class="dg-question">${tr('Колико показује казаљка?')}</p><div class="dg-options" data-opts>${numOptions(it.m, [50, 100, 500], 2000).map(v => `<button type="button" class="dg-option" data-v="${v}">${v} g</button>`).join('')}</div></div></div>`;
-      const d = makeDial(); c.body.querySelector('[data-dial]').append(d.el); d.item(it.id);
-      c.later(() => d.set(it.m), 350);
-      c.body.querySelector('[data-opts]').addEventListener('click', e => {
-        const b = e.target.closest('[data-v]'); if (!b || b.disabled) return;
-        if (Number(b.dataset.v) === it.m) { b.classList.add('right'); c.win(`Тачно! Казаљка показује ${it.m} g.`); }
-        else { b.classList.add('wrong'); b.disabled = true; c.fail('Погледај где се казаљка зауставила. Мале црте су по 50 g.'); }
-      });
-    }
-
-    /* 3) Дигитална вага: одмери тачно задату количину */
-    function renderDig(r, c) {
-      c.prompt(`Одмери тачно ${r.t} g ${r.ing.name}.`);
-      let cur = 0;
-      c.body.innerHTML = `<div class="dg-stage"><div data-dig></div><div class="dg-controls"><p class="dg-status">${tr('Дисплеј показује тежину тачно, чак и мале количине. Додај или скини док не добијеш тражену тежину, па провери.')}</p><div class="dg-pour" data-pour>${[['+1', 1], ['+5', 5], ['+10', 10], ['−1', -1]].map(([l, v]) => `<button type="button" data-v="${v}">${l} g</button>`).join('')}</div><button type="button" class="secondary" data-zero>${tr('Нула (празна посуда)')}</button></div></div>`;
-      const dg = makeDigital(); c.body.querySelector('[data-dig]').append(dg.el); dg.set(0, r.ing.c);
-      const upd = () => dg.set(cur, r.ing.c);
-      c.body.querySelector('[data-pour]').addEventListener('click', e => { const b = e.target.closest('[data-v]'); if (!b) return; cur = clamp(cur + Number(b.dataset.v), 0, 99); upd(); say(''); });
-      c.body.querySelector('[data-zero]').addEventListener('click', () => { cur = 0; upd(); say(''); });
-      c.check(() => {
-        if (cur === r.t) c.win(`Тачно! Дисплеј показује ${cur} g.`);
-        else c.fail(`Дисплеј показује ${cur} g, а треба ${r.t} g. ${cur < r.t ? 'Додај још.' : 'Скини мало.'}`);
-      });
-    }
-
-    /* 4) Која ствар је тежа: погоди, па види на ваги */
+    /* 5) Која ствар је тежа: погоди, па види на ваги */
     function renderCmp([a, b], c) {
       c.prompt('Која ствар је тежа? Прво погоди, па види на ваги.');
       c.body.innerHTML = `<div class="dg-stage"><div data-bal></div><div class="dg-controls"><p class="dg-status">${tr('Изабери тежу ствар или „исто“. Вага ће показати одговор.')}</p><div class="dg-options" data-opts><button type="button" class="dg-option" data-c="L">${itemSVG(a.id, 44)}<span>${tr(a.name)}</span></button><button type="button" class="dg-option" data-c="E"><span>${tr('Исто')}</span></button><button type="button" class="dg-option" data-c="R">${itemSVG(b.id, 44)}<span>${tr(b.name)}</span></button></div></div></div>`;
@@ -1991,7 +2030,7 @@ const DigitalWorkshop = (() => {
       });
     }
 
-    /* 5) Особине: обој кружиће */
+    /* 6) Особине: обој кружиће */
     function renderProps(type, c) {
       c.prompt('Обој кружиће испред особина које ова вага има.');
       c.body.innerHTML = `<div class="dg-stage"><div data-view></div><div class="dg-props" data-props>${shuffle(PROPS).map(p => `<button type="button" class="dg-prop" data-p="${p.id}" aria-pressed="false"><span class="dg-circle"></span><span>${tr(p.t)}</span></button>`).join('')}</div></div>`;
@@ -2013,7 +2052,7 @@ const DigitalWorkshop = (() => {
       });
     }
 
-    /* 6) Која вага одговара опису */
+    /* 7) Која вага одговара опису */
     function renderWhich(s, c) {
       c.prompt('Која вага одговара опису?');
       c.body.innerHTML = `<p class="dg-statement">${tr(s.t)}</p><div class="dg-cards" data-cards>${['tas', 'dial', 'dig'].map(k => `<button type="button" class="dg-card" data-t="${k}"><span data-v="${k}"></span><span>${tr(SCALE_NAMES[k])}</span></button>`).join('')}</div>`;
@@ -2031,8 +2070,8 @@ const DigitalWorkshop = (() => {
       const n = st.rounds.length, s = st.score;
       if (!st.fin) { st.fin = true; if (s > best[st.task.id]) { best[st.task.id] = s; persist(); } onSuccess(true); }
       $('dgKind').textContent = T(st.task.kind); $('dgRound').textContent = `${s} / ${n}`;
-      $('dgPrompt').textContent = T(s === n ? 'Одлично! Све из првог покушаја!' : s >= Math.ceil(n / 2) ? 'Браво! Баш добро ти иде.' : 'Добро си вежбао. Пробај поново!');
-      $('dgBody').innerHTML = `<div class="dg-result"><div class="dg-big-stars" role="img" aria-label="${s} / ${n}">${Array.from({length: n}, (_, i) => starSVG(i < s)).join('')}</div><p>${tr('Звездица добијаш кад тачно одговориш из првог покушаја. Нова серија има нове задатке.')}</p></div>`;
+      $('dgPrompt').textContent = T(s === n ? 'Одлично! Све из првог пута!' : s >= Math.ceil(n / 2) ? 'Браво! Баш добро ти иде.' : 'Добро си вежбао. Пробај поново!');
+      $('dgBody').innerHTML = `<div class="dg-result"><div class="dg-big-stars" role="img" aria-label="${s} / ${n}">${Array.from({length: n}, (_, i) => starSVG(i < s)).join('')}</div><p>${tr('Звездицу добијаш кад погодиш из првог пута. Нова серија има нове задатке.')}</p></div>`;
       $('dgCheck').hidden = true; $('dgReset').hidden = true; $('dgHint').hidden = true;
       $('dgNext').hidden = false; $('dgNext').textContent = T('Нова серија');
       renderStats();
@@ -2059,7 +2098,7 @@ const DigitalWorkshop = (() => {
     function cancel() { clearTimers(); }
     return {render, cancel, startTask, get current() { return {st, best, gameId, taskId}; }};
   }
-  return {GAMES, ITEMS, SHAPES, mount};
+  return {GAMES, ITEMS, BAGS, SHAPES, mount};
 })();
   </script>
   <script id="game-app">
@@ -2078,7 +2117,7 @@ const DigitalWorkshop = (() => {
   let bestQuiz=Number.isInteger(saved.bestQuiz)&&saved.bestQuiz>=0&&saved.bestQuiz<=10?saved.bestQuiz:0;
   let activity='figures',game,selected=null,drag=null,hintTimer=null,celebrationTimer=null,quiz=null,pictureCount=0;
   const sessions={},quizDeck=new Deck(questionBank);let pictureDeck=new Deck(themes.map((_,i)=>i)),pictureCategory='all',onlyBodies=false,pictureLimit=24;
-  const words={brand:'Склопи облик',brandSub:'Мала игра. Велика радозналост.',eyebrow:'ИСТРАЖИ • СКЛОПИ • НАУЧИ',heading:'Који се облик крије?',subtitle:'Споји делове и откриј његово име.',noRush:'Без журбе.',figures:'Облици',solids:'Тела',pictures:'Направи слику',stories:'Приче',sets:'Скупови',digital:'Дигитални свет',lines:'Линије',lineConnectNote:'Сваки спој две тачке је дуж. Више дужи могу да направе изломљену линију. Прати бројеве!',quiz:'Квиз знања',easy:'Лакше',hard:'Изазов',boardLabel:'ТВОЈ ОБЛИК',piecesTitle:'Твоји делови',instruction:'Превуци део на његово место. Можеш и да додирнеш део, па место у облику.',hint:'Мала помоћ',restart:'Испочетка',mix:'Друга слика',preview:'Погледај циљ',collection:'Твоја збирка облика',footer:'За радознале главице · Играј својим темпом',howTo:'Како се игра?',helpTitle:'Осам начина да учиш!',help1:'У „Облицима“ и „Телима“ споји шарене делове. Када све склопиш, испод цртежа појављују се назив и објашњење.',help2:'Превуци део мишем или прстом. Можеш и да додирнеш део, па место. Тастатуром бирај део и место помоћу Tab и Enter. Бројеви ти помажу да пратиш делове.',help3:'У „Направи слику“ од облика састави ракету, ауто и још 108 слика. Коцке, квадри, лопте, ваљци, купе и пирамиде такође постају делови слике. Изабери тему испод игре. „Друга слика“ мења задатак. „Лакше“ показује делове, а „Изазов“ скрива њихове линије.',help7:'У „Скуповима“ имаш 1.200 задатака. Групиши по врсти, боји и величини. Означи чланове, именуј и преброј скупове. Повежи једнак број, допуни скуп, обоји по правилу и споји маме са младунцима. Можеш да превлачиш или да користиш два додира. „Мала помоћ“ подсећа на правило. Бирај врсту и тежину, а напредак се памти на овом уређају.',help8:'У „Дигиталном свету“ су ваге. Стави тегове на вагу са тасовима и прочитај колико предмет тежи, прочитај казаљку, одмери тачну количину на дигиталној ваги, погоди која ствар је тежа и обој особине сваке ваге. Звездицу добијаш кад тачно одговориш из првог покушаја.',help5:'У „Линијама“ препознај праву, дуж, криве и изломљене линије. Споји тачке мишем, прстом или тастатуром. У „Нацртај“ комбинуј дужи и криве, затварај облике и прави своје цртеже. „Други задатак“ мења комбинацију.',help6:'У „Причама“ нацртај линију лево, десно, изнад, испод, поред, унутра, на предмету или између другара. Споји децу са балонима и змајевима. „Додај линију“ омогућава да изабереш линију и њено место. У „Топлим домовима“ сложи кутије, кућице, дупља и гнезда за 12 животиња. Мењај јесен и зиму.',help4:'Квиз има 10 измешаних питања. Изабери један одговор; ако погрешиш, пробај поново. Резултат броји одговоре тачне из првог покушаја. Писмо и звук мењаш горе.',quizNote:'Без журбе и без казне за грешке. Свако питање можеш да покушаш поново.',letsPlay:'Хајде да играмо',quizHint:'Наговештај',newQuiz:'Нови квиз',quizNext:'Следеће питање'};
+  const words={brand:'Склопи облик',brandSub:'Мала игра. Велика радозналост.',eyebrow:'ИСТРАЖИ • СКЛОПИ • НАУЧИ',heading:'Који се облик крије?',subtitle:'Споји делове и откриј његово име.',noRush:'Без журбе.',figures:'Облици',solids:'Тела',pictures:'Направи слику',stories:'Приче',sets:'Скупови',digital:'Дигитални свет',lines:'Линије',lineConnectNote:'Сваки спој две тачке је дуж. Више дужи могу да направе изломљену линију. Прати бројеве!',quiz:'Квиз знања',easy:'Лакше',hard:'Изазов',boardLabel:'ТВОЈ ОБЛИК',piecesTitle:'Твоји делови',instruction:'Превуци део на његово место. Можеш и да додирнеш део, па место у облику.',hint:'Мала помоћ',restart:'Испочетка',mix:'Друга слика',preview:'Погледај циљ',collection:'Твоја збирка облика',footer:'За радознале главице · Играј својим темпом',howTo:'Како се игра?',helpTitle:'Осам начина да учиш!',help1:'У „Облицима“ и „Телима“ споји шарене делове. Када све склопиш, испод цртежа појављују се назив и објашњење.',help2:'Превуци део мишем или прстом. Можеш и да додирнеш део, па место. Тастатуром бирај део и место помоћу Tab и Enter. Бројеви ти помажу да пратиш делове.',help3:'У „Направи слику“ од облика састави ракету, ауто и још 108 слика. Коцке, квадри, лопте, ваљци, купе и пирамиде такође постају делови слике. Изабери тему испод игре. „Друга слика“ мења задатак. „Лакше“ показује делове, а „Изазов“ скрива њихове линије.',help7:'У „Скуповима“ имаш 1.200 задатака. Групиши по врсти, боји и величини. Означи чланове, именуј и преброј скупове. Повежи једнак број, допуни скуп, обоји по правилу и споји маме са младунцима. Можеш да превлачиш или да користиш два додира. „Мала помоћ“ подсећа на правило. Бирај врсту и тежину, а напредак се памти на овом уређају.',help8:'У „Дигиталном свету“ су ваге. Прочитај број на екрану и на казаљци и упиши га. Одмери колико кеса треба. Стави тегове од по 1 кг и преброј их. Звездицу добијаш кад погодиш из првог пута.',help5:'У „Линијама“ препознај праву, дуж, криве и изломљене линије. Споји тачке мишем, прстом или тастатуром. У „Нацртај“ комбинуј дужи и криве, затварај облике и прави своје цртеже. „Други задатак“ мења комбинацију.',help6:'У „Причама“ нацртај линију лево, десно, изнад, испод, поред, унутра, на предмету или између другара. Споји децу са балонима и змајевима. „Додај линију“ омогућава да изабереш линију и њено место. У „Топлим домовима“ сложи кутије, кућице, дупља и гнезда за 12 животиња. Мењај јесен и зиму.',help4:'Квиз има 10 измешаних питања. Изабери један одговор; ако погрешиш, пробај поново. Резултат броји одговоре тачне из првог покушаја. Писмо и звук мењаш горе.',quizNote:'Без журбе и без казне за грешке. Свако питање можеш да покушаш поново.',letsPlay:'Хајде да играмо',quizHint:'Наговештај',newQuiz:'Нови квиз',quizNext:'Следеће питање'};
   const t=s=>language==='lat'?s.replace(/[А-Яа-яЂђЈјЉљЊњЋћЏџ]/g,c=>translit[c]||c):s;
   const labelFor=s=>{const result=t(s.name);return language==='lat'?result.toLocaleUpperCase('sr-Latn'):result};
   const checkIcon='<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>';
