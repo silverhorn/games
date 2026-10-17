@@ -4,6 +4,7 @@
   --panel:rgba(255,255,255,.1);--line:rgba(255,255,255,.22);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:#0a2352}
 html,body{margin:0;min-height:100%}
 body{
   background:radial-gradient(1300px 760px at 15% -5%,var(--bg2),var(--bg1) 70%) fixed;
