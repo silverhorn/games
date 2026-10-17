@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sokoban</title>
+<link rel="stylesheet" href="common.css">
+<style>
+  .stage{width:min(94vw,560px);aspect-ratio:1;display:flex;align-items:center;justify-content:center;touch-action:none}
+  canvas{width:100%;height:100%;border-radius:22px;background:rgba(0,0,0,.18);touch-action:none;display:block}
+  .lvlname{font-weight:800;font-size:clamp(20px,3vw,28px)}
+  .tools{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .dpad{display:none;grid-template-columns:repeat(3,72px);grid-template-rows:repeat(2,72px);gap:8px;justify-content:center}
+  .dpad .btn{min-height:72px;font-size:28px;border-radius:20px;padding:0}
+  .dpad .u{grid-column:2;grid-row:1}.dpad .l{grid-column:1;grid-row:2}.dpad .d{grid-column:2;grid-row:2}.dpad .r{grid-column:3;grid-row:2}
+  @media (hover:none),(max-width:760px){.dpad{display:grid}}
+  .lvls{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .lvl{
+    appearance:none;border:2px solid var(--line);background:var(--panel);color:var(--ink);font:inherit;font-weight:800;font-size:22px;
+    min-height:62px;border-radius:16px;cursor:pointer;position:relative;
+  }
+  .lvl.done::after{content:"★";position:absolute;top:2px;right:8px;color:var(--accent);font-size:18px}
+  .lvl[aria-current="true"]{background:#fff;color:#0d2d66;border-color:#fff}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="btn" href="index.html">‹ Nazad</a>
+  <div class="brand">SOKOBAN</div>
+  <div class="grow"></div>
+  <button class="btn" id="menuBtn" type="button">☰ Faze</button>
+  <button class="btn round" id="snd" type="button">🔊</button>
+</header>
+
+<main class="page">
+  <div class="lvlname" id="lvlname">Faza 1</div>
+  <div class="stage" id="stage"><canvas id="cv" aria-label="Tabla igre"></canvas></div>
+  <div class="status" id="status" aria-live="polite"></div>
+  <div class="tools">
+    <button class="btn" id="undo" type="button">↶ Korak nazad</button>
+    <button class="btn" id="restart" type="button">⟲ Iznova</button>
+  </div>
+  <div class="dpad" aria-label="Strelice">
+    <button class="btn u" type="button" data-d="up" aria-label="Gore">▲</button>
+    <button class="btn l" type="button" data-d="left" aria-label="Levo">◀</button>
+    <button class="btn d" type="button" data-d="down" aria-label="Dole">▼</button>
+    <button class="btn r" type="button" data-d="right" aria-label="Desno">▶</button>
+  </div>
+  <div class="hint">Gurni sve kutije na žute oznake. Kutije se samo guraju, ne vuku. Strelice, prevlačenje ili dodir pored igrača. OK otvara izbor faza.</div>
+</main>
+
+<div class="overlay" id="menu" hidden role="dialog" aria-modal="true" aria-label="Izbor faze">
+  <div class="sheet">
+    <h2>Izaberi fazu</h2>
+    <div class="lvls" id="lvls"></div>
+    <button class="btn primary" id="resume" type="button">Nastavi igru</button>
+    <a class="btn" href="index.html">Nazad na izbor igara</a>
+  </div>
+</div>
+
+<div class="overlay" id="won" hidden role="dialog" aria-modal="true" aria-label="Faza rešena">
+  <div class="sheet">
+    <h2 id="wonTitle">Bravo! ★</h2>
+    <p>Sve kutije su na svom mestu.</p>
+    <button class="btn primary" id="next" type="button">Sledeća faza ›</button>
+    <button class="btn" id="again" type="button">Igraj ovu ponovo</button>
+  </div>
+</div>
+
+<script src="common.js"></script>
+<script>
+/*LEVELS*/
+var LEVELS=[
+ ["#####","#@$.#","#####"],
+ ["######","#    #","# $. #","# @  #","######"],
+ ["#######","#     #","# $ . #","#  @  #","#######"],
+ ["#######","#  .  #","# $@$ #","#  .  #","#######"],
+ ["#######","#  .  #","#     #","# $   #","#  @  #","#######"],
+ ["########","#      #","# $    #","#   @  #","#    $ #","# .  . #","########"],
+ ["#########","#   .   #","#  $ $  #","#   @   #","#   .   #","#########"],
+ ["#######","#  .  #","# $ $ #","#  .  #","#  @  #","#######"],
+ ["#########","#       #","# $     #","# $   . #","# $ @ . #","#     . #","#########"],
+ ["##########","#        #","# $  $   #","#   @    #","#  $     #","# . . .  #","##########"],
+ ["##########","#   #    #","# $ #  . #","#   $    #","# @ #  . #","#   #    #","##########"],
+ ["  #####","###   #","# $ # #","# #  .#","# @ $ #","#.    #","#######"]
+];
+/*END LEVELS*/
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var cv=$('cv'),ctx=cv.getContext('2d'),statusEl=$('status');
+  var lvl=0,W,H,walls,goals,boxes,px,py,hist,solved={},won=false,dpr=1,tile=40,ox=0,oy=0,lastDir='down',bump=0;
+  try{solved=JSON.parse(localStorage.getItem('tvi-soko')||'{}')}catch(e){}
+  try{var s=parseInt(localStorage.getItem('tvi-soko-lvl'),10);if(s>=0&&s<LEVELS.length)lvl=s}catch(e){}
+
+  function load(n){
+    lvl=n;won=false;hist=[];
+    try{localStorage.setItem('tvi-soko-lvl',String(n))}catch(e){}
+    var rows=LEVELS[n];W=0;rows.forEach(function(r){W=Math.max(W,r.length)});H=rows.length;
+    walls={};goals={};boxes={};
+    rows.forEach(function(r,y){
+      for(var x=0;x<W;x++){
+        var c=r[x]||' ',k=x+','+y;
+        if(c==='#')walls[k]=1;
+        if(c==='.'||c==='*'||c==='+')goals[k]=1;
+        if(c==='$'||c==='*')boxes[k]=1;
+        if(c==='@'||c==='+'){px=x;py=y}
+      }
+    });
+    $('lvlname').textContent='Faza '+(n+1)+' od '+LEVELS.length+(solved[n]?'  ★':'');
+    say('');resize();draw();
+  }
+  function say(t){statusEl.textContent=t}
+  function snapshot(){return {px:px,py:py,boxes:JSON.parse(JSON.stringify(boxes))}}
+  function isWon(){for(var k in boxes)if(!goals[k])return false;return true}
+
+  function move(dx,dy){
+    if(won)return;
+    if(dx<0)lastDir='left';else if(dx>0)lastDir='right';else if(dy<0)lastDir='up';else lastDir='down';
+    var nx=px+dx,ny=py+dy,k=nx+','+ny;
+    if(walls[k]){draw();return}
+    var snap=snapshot();
+    if(boxes[k]){
+      var bx=nx+dx,by=ny+dy,bk=bx+','+by;
+      if(walls[bk]||boxes[bk]){Snd.soft();say('Tu ne može — probaj drugačije.');draw();return}
+      delete boxes[k];boxes[bk]=1;
+      goals[bk]?Snd.pop():Snd.put();
+    }else Snd.step();
+    hist.push(snap);px=nx;py=ny;say('');
+    draw();
+    if(isWon())win();
+  }
+  function undo(){
+    if(won||!hist.length)return;
+    var s=hist.pop();px=s.px;py=s.py;boxes=s.boxes;say('');draw();
+  }
+  function win(){
+    won=true;solved[lvl]=1;
+    try{localStorage.setItem('tvi-soko',JSON.stringify(solved))}catch(e){}
+    $('lvlname').textContent='Faza '+(lvl+1)+' od '+LEVELS.length+'  ★';
+    Snd.win();
+    var last=lvl===LEVELS.length-1;
+    $('wonTitle').textContent=last?'Bravo! Rešio si sve faze! 🎉':'Bravo! ★';
+    $('next').textContent=last?'Počni ispočetka ›':'Sledeća faza ›';
+    TV.navScope=function(){return $('won')};
+    $('won').hidden=false;
+    $('next').focus();
+  }
+
+  /* ---------- crtanje ---------- */
+  function resize(){
+    var r=cv.getBoundingClientRect();dpr=window.devicePixelRatio||1;
+    cv.width=Math.round(r.width*dpr);cv.height=Math.round(r.height*dpr);
+    tile=Math.floor(Math.min(cv.width/(W+1),cv.height/(H+1)));
+    ox=Math.floor((cv.width-tile*W)/2);oy=Math.floor((cv.height-tile*H)/2);
+  }
+  function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+  function draw(){
+    if(!cv.width)return;
+    ctx.clearRect(0,0,cv.width,cv.height);
+    var t=tile;
+    for(var y=0;y<H;y++)for(var x=0;x<W;x++){
+      var k=x+','+y,X=ox+x*t,Y=oy+y*t,row=LEVELS[lvl][y],c=row[x]||' ';
+      if(walls[k]){
+        ctx.fillStyle='#8a6bbd';rr(X+1,Y+1,t-2,t-2,t*.16);ctx.fill();
+        ctx.strokeStyle='rgba(255,255,255,.28)';ctx.lineWidth=Math.max(1,t*.04);
+        ctx.beginPath();ctx.moveTo(X+3,Y+t/2);ctx.lineTo(X+t-3,Y+t/2);ctx.moveTo(X+t/2,Y+3);ctx.lineTo(X+t/2,Y+t/2);ctx.moveTo(X+t/4,Y+t/2);ctx.lineTo(X+t/4,Y+t-3);ctx.moveTo(X+t*.75,Y+t/2);ctx.lineTo(X+t*.75,Y+t-3);ctx.stroke();
+      }else if(c!==' '||isInside(x,y)){
+        ctx.fillStyle='#f3ecd8';rr(X+1,Y+1,t-2,t-2,t*.12);ctx.fill();
+        if(goals[k]){
+          ctx.fillStyle='#ffd24a';ctx.beginPath();star(X+t/2,Y+t/2,t*.26,t*.12,5);ctx.fill();
+        }
+      }
+    }
+    for(var bk in boxes){
+      var p=bk.split(','),bx=ox+p[0]*t,by=oy+p[1]*t,on=!!goals[bk];
+      ctx.fillStyle=on?'#6fd68c':'#e8a94a';rr(bx+t*.08,by+t*.08,t*.84,t*.84,t*.14);ctx.fill();
+      ctx.strokeStyle=on?'#2f8f55':'#8a5a1a';ctx.lineWidth=Math.max(2,t*.07);rr(bx+t*.08,by+t*.08,t*.84,t*.84,t*.14);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(bx+t*.2,by+t*.2);ctx.lineTo(bx+t*.8,by+t*.8);ctx.moveTo(bx+t*.8,by+t*.2);ctx.lineTo(bx+t*.2,by+t*.8);ctx.stroke();
+    }
+    /* igrač */
+    var cx=ox+px*t+t/2,cy=oy+py*t+t/2;
+    ctx.fillStyle='#4fa3ff';ctx.beginPath();ctx.arc(cx,cy,t*.36,0,7);ctx.fill();
+    ctx.strokeStyle='#1f5fb0';ctx.lineWidth=Math.max(2,t*.06);ctx.stroke();
+    var ex=lastDir==='left'?-1:lastDir==='right'?1:0,ey=lastDir==='up'?-1:lastDir==='down'?1:0;
+    [[-.14,0],[.14,0]].forEach(function(o){
+      var ax=cx+(ey?o[0]*t:ex*t*.06+(o[0]>0?.12:-.12)*0+o[0]*t*(ex?0.3:1)),ay=cy-t*.04+(ex?o[0]*t*.9:0);
+      if(ex){ax=cx+ex*t*.12;ay=cy+o[0]*t*1.1-t*.02}
+      if(ey){ax=cx+o[0]*t;ay=cy+ey*t*.08-t*.02}
+      if(!ex&&!ey){ax=cx+o[0]*t}
+      ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(ax,ay,t*.1,0,7);ctx.fill();
+      ctx.fillStyle='#123';ctx.beginPath();ctx.arc(ax+ex*t*.03,ay+ey*t*.03,t*.05,0,7);ctx.fill();
+    });
+  }
+  function isInside(x,y){
+    /* polje je "unutra" ako se sa leve strane do zida sreće zid i sa desne strane takođe (jednostavno popunjavanje) */
+    var row=LEVELS[lvl][y]||'',a=row.indexOf('#'),b=row.lastIndexOf('#');
+    return a>=0&&x>a&&x<b;
+  }
+  function star(cx,cy,R,r,n){
+    for(var i=0;i<n*2;i++){
+      var a=-Math.PI/2+i*Math.PI/n,rad=i%2?r:R,x=cx+Math.cos(a)*rad,y=cy+Math.sin(a)*rad;
+      i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+    }
+    ctx.closePath();
+  }
+
+  /* ---------- upravljanje ---------- */
+  var DIRV={left:[-1,0],right:[1,0],up:[0,-1],down:[0,1]};
+  function go(d){var v=DIRV[d];move(v[0],v[1])}
+  function menuOpen(){return !$('menu').hidden}
+  function openMenu(){
+    paintLevels();TV.navScope=function(){return $('menu')};
+    $('menu').hidden=false;$('resume').focus();
+  }
+  function closeMenu(){
+    $('menu').hidden=true;TV.navScope=gameScope;document.activeElement&&document.activeElement.blur();
+  }
+  function gameScope(){return null}
+  TV.navScope=gameScope;
+  TV.onBack=function(){
+    if(!$('won').hidden){closeWon();return}
+    if(menuOpen()){closeMenu();return}
+    TV.home();
+  };
+  function closeWon(){$('won').hidden=true;TV.navScope=gameScope;document.activeElement&&document.activeElement.blur()}
+
+  document.addEventListener('keydown',function(e){
+    var m={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down',a:'left',d:'right',w:'up',s:'down',A:'left',D:'right',W:'up',S:'down'};
+    var overlayOpen=menuOpen()||!$('won').hidden;
+    if(overlayOpen)return;
+    if(m[e.key]){e.preventDefault();go(m[e.key]);return}
+    if(e.key==='z'||e.key==='Z'||e.key==='u'||e.key==='U'){undo();return}
+    if(e.key==='Enter'||e.key===' '){
+      if(document.activeElement&&document.activeElement.tagName==='BUTTON'||document.activeElement&&document.activeElement.tagName==='A')return;
+      e.preventDefault();openMenu();
+    }
+  });
+  document.querySelectorAll('[data-d]').forEach(function(b){b.addEventListener('click',function(){go(b.dataset.d)})});
+  $('undo').addEventListener('click',undo);
+  $('restart').addEventListener('click',function(){load(lvl)});
+  $('menuBtn').addEventListener('click',openMenu);
+  $('resume').addEventListener('click',closeMenu);
+  $('again').addEventListener('click',function(){closeWon();load(lvl)});
+  $('next').addEventListener('click',function(){closeWon();load((lvl+1)%LEVELS.length)});
+
+  /* prevlačenje ili dodir pored igrača */
+  var sx=0,sy=0,down=false;
+  cv.addEventListener('pointerdown',function(e){down=true;sx=e.clientX;sy=e.clientY});
+  cv.addEventListener('pointerup',function(e){
+    if(!down)return;down=false;
+    var dx=e.clientX-sx,dy=e.clientY-sy;
+    if(Math.max(Math.abs(dx),Math.abs(dy))<24){
+      var r=cv.getBoundingClientRect(),s=cv.width/r.width;
+      dx=(e.clientX-r.left)*s-(ox+px*tile+tile/2);dy=(e.clientY-r.top)*s-(oy+py*tile+tile/2);
+    }
+    if(Math.abs(dx)<2&&Math.abs(dy)<2)return;
+    go(Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy>0?'down':'up'));
+  });
+  cv.addEventListener('pointercancel',function(){down=false});
+
+  function paintLevels(){
+    var box=$('lvls');box.innerHTML='';
+    LEVELS.forEach(function(_,i){
+      var b=document.createElement('button');
+      b.type='button';b.className='lvl'+(solved[i]?' done':'');b.textContent=String(i+1);
+      b.setAttribute('aria-label','Faza '+(i+1)+(solved[i]?', rešena':''));
+      if(i===lvl)b.setAttribute('aria-current','true');
+      b.addEventListener('click',function(){closeMenu();load(i)});
+      box.appendChild(b);
+    });
+  }
+  window.addEventListener('resize',function(){resize();draw()});
+  load(lvl);
+  window.__soko={get lvl(){return lvl},get won(){return won},get solved(){return solved},load:load,go:go,undo:undo,LEVELS:LEVELS,state:function(){return {px:px,py:py,boxes:Object.keys(boxes)}}};
+})();
+</script>
+</body>
+</html>

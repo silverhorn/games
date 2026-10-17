@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Zmijica</title>
+<link rel="stylesheet" href="common.css">
+<style>
+  .stage{width:min(94vw,64vh,560px);aspect-ratio:1}
+  canvas{width:100%;height:100%;border-radius:22px;display:block;touch-action:none;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+  .hud{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .hud div{background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:8px 16px;font-weight:800;font-size:20px;min-width:130px;text-align:center}
+  .hud b{font-size:26px;margin-left:6px;color:var(--accent)}
+  .dpad{display:none;grid-template-columns:repeat(3,72px);grid-template-rows:repeat(2,72px);gap:8px;justify-content:center}
+  .dpad .btn{min-height:72px;font-size:28px;border-radius:20px;padding:0}
+  .dpad .u{grid-column:2;grid-row:1}.dpad .l{grid-column:1;grid-row:2}.dpad .d{grid-column:2;grid-row:2}.dpad .r{grid-column:3;grid-row:2}
+  @media (hover:none),(max-width:760px){.dpad{display:grid}}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="btn" href="index.html">‹ Nazad</a>
+  <div class="brand">ZMIJICA</div>
+  <div class="grow"></div>
+  <button class="btn" id="pauseBtn" type="button">⏸ Pauza</button>
+  <button class="btn round" id="snd" type="button">🔊</button>
+</header>
+
+<main class="page">
+  <div class="hud">
+    <div>🍎<b id="score">0</b></div>
+    <div>Najbolje<b id="best">0</b></div>
+  </div>
+  <div class="stage"><canvas id="cv" width="640" height="640" aria-label="Tabla igre"></canvas></div>
+  <div class="status" id="status" aria-live="polite"></div>
+  <div class="dpad" aria-label="Strelice">
+    <button class="btn u" type="button" data-d="up" aria-label="Gore">▲</button>
+    <button class="btn l" type="button" data-d="left" aria-label="Levo">◀</button>
+    <button class="btn d" type="button" data-d="down" aria-label="Dole">▼</button>
+    <button class="btn r" type="button" data-d="right" aria-label="Desno">▶</button>
+  </div>
+  <div class="hint">Strelice ili prevlačenje menjaju smer. Kad zmijica izađe na jednu ivicu, vrati se na drugoj. OK je pauza.</div>
+</main>
+
+<div class="overlay" id="menu" role="dialog" aria-modal="true" aria-label="Zmijica">
+  <div class="sheet">
+    <h2 id="menuTitle">Zmijica</h2>
+    <p id="menuText">Pojedi što više jabuka. Ako se zmijica zaplete, samo joj se rep skrati — nema kraja igre.</p>
+    <div class="chips" role="group" aria-label="Brzina" style="justify-content:center">
+      <span class="lbl">Brzina:</span>
+      <button class="btn" type="button" data-speed="0" aria-pressed="true">Sporo</button>
+      <button class="btn" type="button" data-speed="1" aria-pressed="false">Srednje</button>
+      <button class="btn" type="button" data-speed="2" aria-pressed="false">Brzo</button>
+    </div>
+    <button class="btn primary" id="go" type="button">Kreni!</button>
+    <button class="btn" id="fresh" type="button">Počni iznova</button>
+    <a class="btn" href="index.html">Nazad na izbor igara</a>
+  </div>
+</div>
+
+<script src="common.js"></script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var cv=$('cv'),ctx=cv.getContext('2d'),N=16,CS=cv.width/N;
+  var SPEEDS=[240,170,115],speed=0;
+  var body,prev,dir,queue,apple,score,best=0,state,lastTick,facing;
+  /* state: 'menu' (pauza/početak), 'ready' (čeka prvi smer), 'run' */
+  try{best=parseInt(localStorage.getItem('tvi-snake-best'),10)||0;var sp=parseInt(localStorage.getItem('tvi-snake-speed'),10);if(sp>=0&&sp<3)speed=sp}catch(e){}
+  var DIR={left:[-1,0],right:[1,0],up:[0,-1],down:[0,1]};
+
+  function newGame(){
+    body=[{x:8,y:8},{x:7,y:8},{x:6,y:8}];prev=body.slice();
+    dir=DIR.right;facing=dir;queue=[];score=0;
+    placeApple();paintHud();state='ready';draw(1);
+    $('status').textContent='Dodirni strelicu da zmijica krene';
+  }
+  function placeApple(){
+    var free=[];
+    for(var y=0;y<N;y++)for(var x=0;x<N;x++)if(!body.some(function(s){return s.x===x&&s.y===y}))free.push({x:x,y:y});
+    apple=free[Math.floor(Math.random()*free.length)]||{x:0,y:0};
+  }
+  function paintHud(){
+    $('score').textContent=score;$('best').textContent=best;
+  }
+  function mod(a){return (a%N+N)%N}
+
+  function tick(){
+    if(queue.length){
+      var d=queue.shift();
+      if(!(d[0]===-dir[0]&&d[1]===-dir[1])&&!(d[0]===dir[0]&&d[1]===dir[1]))dir=d;
+    }
+    facing=dir;
+    prev=body.slice();
+    var head={x:mod(body[0].x+dir[0]),y:mod(body[0].y+dir[1])};
+    var eat=head.x===apple.x&&head.y===apple.y;
+    /* sudar sa sobom: rep se samo skrati (ne gubi se igra) */
+    var hit=-1;
+    for(var i=0;i<body.length-(eat?0:1);i++)if(body[i].x===head.x&&body[i].y===head.y){hit=i;break}
+    if(hit>0){
+      body=body.slice(0,Math.max(3,hit));
+      prev=prev.slice(0,body.length);
+      body.unshift(head);
+      Snd.soft();
+      $('status').textContent='Ups! Rep je kraći. Samo nastavi!';
+      setTimeout(function(){if(state==='run')$('status').textContent=''},1800);
+      return;
+    }
+    body.unshift(head);
+    if(eat){
+      score++;if(score>best){best=score;try{localStorage.setItem('tvi-snake-best',String(best))}catch(e){}}
+      Snd.eat();placeApple();paintHud();
+      if(score>0&&score%5===0)$('status').textContent='Bravo! '+score+' jabuka! 🎉';
+    }else body.pop();
+  }
+
+  /* ---------- crtanje ---------- */
+  function segPos(i,t){
+    var cur=body[i],pv=prev[i]||prev[prev.length-1]||cur;
+    var dx=cur.x-pv.x,dy=cur.y-pv.y;
+    if(dx>1)dx=-1;else if(dx<-1)dx=1;
+    if(dy>1)dy=-1;else if(dy<-1)dy=1;
+    return {x:pv.x+dx*t,y:pv.y+dy*t};
+  }
+  function circle(x,y,r,fill){ctx.fillStyle=fill;ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fill()}
+  function draw(t){
+    var s=CS;
+    for(var y=0;y<N;y++)for(var x=0;x<N;x++){
+      ctx.fillStyle=(x+y)%2?'#b9e0a0':'#c6eab0';ctx.fillRect(x*s,y*s,s,s);
+    }
+    /* jabuka */
+    var ax=(apple.x+.5)*s,ay=(apple.y+.54)*s;
+    circle(ax,ay,s*.36,'#e8413a');circle(ax-s*.1,ay-s*.1,s*.09,'rgba(255,255,255,.55)');
+    ctx.strokeStyle='#6b4a1c';ctx.lineWidth=s*.06;ctx.beginPath();ctx.moveTo(ax,ay-s*.32);ctx.lineTo(ax+s*.05,ay-s*.46);ctx.stroke();
+    ctx.fillStyle='#2f9e44';ctx.beginPath();ctx.ellipse(ax+s*.17,ay-s*.4,s*.14,s*.07,-.5,0,7);ctx.fill();
+    /* zmijica: od repa ka glavi */
+    var L=body.length;
+    for(var i=L-1;i>=0;i--){
+      var p=segPos(i,t),k=i/Math.max(1,L-1);
+      var g=Math.round(190-k*60),col='rgb('+Math.round(60+k*20)+','+g+','+Math.round(70+k*20)+')';
+      if(i===0)col='#3fcf5c';
+      var r=s*(i===0?.5:.46-k*.06);
+      [0,-N,N].forEach(function(ox){[0,-N,N].forEach(function(oy){
+        var X=(p.x+ox+.5)*s,Y=(p.y+oy+.5)*s;
+        if(X<-s||Y<-s||X>cv.width+s||Y>cv.height+s)return;
+        circle(X,Y,r,col);
+        if(i===0)eyes(X,Y,s);
+      })});
+    }
+  }
+  function eyes(X,Y,s){
+    var f=facing,px=-f[1],py=f[0];
+    [-1,1].forEach(function(sd){
+      var ex=X+f[0]*s*.16+px*sd*s*.2,ey=Y+f[1]*s*.16+py*sd*s*.2;
+      circle(ex,ey,s*.13,'#fff');circle(ex+f[0]*s*.04,ey+f[1]*s*.04,s*.065,'#10223a');
+    });
+  }
+
+  /* ---------- petlja ---------- */
+  var raf=0;
+  function frame(now){
+    raf=requestAnimationFrame(frame);
+    if(state!=='run'){return}
+    var sp=SPEEDS[speed];
+    if(now-lastTick>sp*3)lastTick=now-sp;
+    while(now-lastTick>=sp){lastTick+=sp;tick()}
+    draw(Math.min(1,(now-lastTick)/sp));
+  }
+
+  /* ---------- upravljanje ---------- */
+  function steer(name){
+    var d=DIR[name];if(!d||state==='menu')return;
+    if(state==='ready'){
+      if(d[0]===-dir[0]&&d[1]===-dir[1])return;/* ne okreće se unazad */
+      dir=d;facing=d;state='run';lastTick=performance.now();$('status').textContent='';
+      return;
+    }
+    var last=queue.length?queue[queue.length-1]:dir;
+    if(d[0]===last[0]&&d[1]===last[1])return;
+    if(queue.length<2)queue.push(d);
+  }
+  var resumeState='ready';
+  function openMenu(){
+    if(state==='menu')return;
+    resumeState=state;state='menu';
+    $('menuTitle').textContent=score>0||resumeState==='run'?'Pauza':'Zmijica';
+    $('go').textContent=resumeState==='run'||score>0?'Nastavi':'Kreni!';
+    TV.navScope=function(){return $('menu')};
+    $('menu').hidden=false;$('go').focus();
+  }
+  function closeMenu(){
+    $('menu').hidden=true;TV.navScope=function(){return null};
+    if(document.activeElement)document.activeElement.blur();
+    state=resumeState==='run'?'run':'ready';
+    if(state==='run')lastTick=performance.now();
+    if(state==='ready')$('status').textContent='Dodirni strelicu da zmijica krene';
+    draw(1);
+  }
+  TV.navScope=function(){return null};
+  TV.onBack=function(){if(state==='menu'&&resumeState!=='none'&&!$('menu').hidden&&started)closeMenu();else TV.home()};
+  var started=false;
+  document.addEventListener('keydown',function(e){
+    var m={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down',a:'left',d:'right',w:'up',s:'down',A:'left',D:'right',W:'up',S:'down'};
+    if(state==='menu')return;
+    if(m[e.key]){e.preventDefault();steer(m[e.key]);return}
+    if(e.key==='Enter'||e.key===' '||e.key==='p'||e.key==='P'){
+      var t=document.activeElement&&document.activeElement.tagName;
+      if(t==='BUTTON'||t==='A')return;
+      e.preventDefault();openMenu();
+    }
+  });
+  document.querySelectorAll('[data-d]').forEach(function(b){b.addEventListener('click',function(){steer(b.dataset.d)})});
+  $('pauseBtn').addEventListener('click',openMenu);
+  $('go').addEventListener('click',function(){started=true;closeMenu()});
+  $('fresh').addEventListener('click',function(){started=true;newGame();resumeState='ready';closeMenu()});
+  document.querySelectorAll('[data-speed]').forEach(function(b){
+    function paint(){b.setAttribute('aria-pressed',String(Number(b.dataset.speed)===speed))}
+    paint();
+    b.addEventListener('click',function(){
+      speed=Number(b.dataset.speed);try{localStorage.setItem('tvi-snake-speed',String(speed))}catch(e){}
+      document.querySelectorAll('[data-speed]').forEach(function(x){x.setAttribute('aria-pressed',String(Number(x.dataset.speed)===speed))});
+      Snd.pop();
+    });
+  });
+  document.addEventListener('visibilitychange',function(){if(document.hidden&&state==='run'){started=true;openMenu()}});
+
+  /* prevlačenje prstom */
+  var sx=0,sy=0,down=false;
+  cv.addEventListener('pointerdown',function(e){down=true;sx=e.clientX;sy=e.clientY});
+  cv.addEventListener('pointerup',function(e){
+    if(!down)return;down=false;
+    var dx=e.clientX-sx,dy=e.clientY-sy;
+    if(Math.max(Math.abs(dx),Math.abs(dy))<20)return;
+    steer(Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy>0?'down':'up'));
+  });
+  cv.addEventListener('pointercancel',function(){down=false});
+
+  newGame();state='menu';resumeState='ready';
+  TV.navScope=function(){return $('menu')};
+  raf=requestAnimationFrame(frame);
+  $('go').focus();
+  window.__snake={get state(){return state},get score(){return score},get length(){return body.length},tick:tick,steer:steer,body:function(){return body.map(function(s){return [s.x,s.y]})},apple:function(){return [apple.x,apple.y]},setApple:function(x,y){apple={x:x,y:y}},setBody:function(b){body=b.map(function(s){return {x:s[0],y:s[1]}});prev=body.slice()},dir:function(){return dir}};
+})();
+</script>
+</body>
+</html>

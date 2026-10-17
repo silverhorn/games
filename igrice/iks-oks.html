@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Iks-Oks</title>
+<link rel="stylesheet" href="common.css">
+<style>
+  .board{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:min(88vw,62vh,460px);aspect-ratio:1}
+  .cell{
+    appearance:none;border:0;border-radius:22px;background:rgba(255,255,255,.14);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;padding:14%;transition:background .15s,transform .1s;
+  }
+  .cell:hover:not(:disabled){background:rgba(255,255,255,.24)}
+  .cell:active:not(:disabled){transform:scale(.96)}
+  .cell:disabled{cursor:default}
+  .cell svg{width:100%;height:100%;overflow:visible}
+  .cell.win{background:rgba(255,210,74,.35);animation:glow .9s ease-in-out infinite alternate}
+  @keyframes glow{from{box-shadow:0 0 0 0 rgba(255,210,74,.0)}to{box-shadow:0 0 0 10px rgba(255,210,74,.5)}}
+  .score{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .score div{background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:8px 16px;font-weight:800;font-size:18px;min-width:110px;text-align:center}
+  .score b{font-size:24px;margin-left:6px}
+  .x-col{color:var(--cyan)} .o-col{color:var(--pink)}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="btn" href="index.html" id="back">‹ Nazad</a>
+  <div class="brand">IKS-OKS</div>
+  <div class="grow"></div>
+  <button class="btn round" id="snd" type="button">🔊</button>
+</header>
+
+<main class="page">
+  <div class="chips" role="group" aria-label="Broj igrača">
+    <span class="lbl">Igrači:</span>
+    <button class="btn" type="button" data-mode="1" aria-pressed="true">1 igrač</button>
+    <button class="btn" type="button" data-mode="2" aria-pressed="false">2 igrača</button>
+  </div>
+  <div class="chips" id="diffRow" role="group" aria-label="Težina">
+    <span class="lbl">Težina:</span>
+    <button class="btn" type="button" data-diff="lako" aria-pressed="true">Lako</button>
+    <button class="btn" type="button" data-diff="srednje" aria-pressed="false">Srednje</button>
+    <button class="btn" type="button" data-diff="tesko" aria-pressed="false">Teško</button>
+  </div>
+
+  <div class="status" id="status" aria-live="polite"></div>
+  <div class="board" id="board" role="grid" aria-label="Tabla"></div>
+
+  <div class="score" id="score"></div>
+  <button class="btn primary" id="again" type="button">Nova igra</button>
+  <div class="hint">Dodirni polje, ili strelicama izaberi polje pa OK. Tasteri 1–9 takođe rade.</div>
+</main>
+
+<script src="common.js"></script>
+<script>
+(function(){
+  var LINES=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  var X_SVG='<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M16 16 L84 84 M84 16 L16 84" stroke="#4fd8ff" stroke-width="16" stroke-linecap="round"/></svg>';
+  var O_SVG='<svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="33" fill="none" stroke="#ff7aa8" stroke-width="16"/></svg>';
+  var $=function(id){return document.getElementById(id)};
+  var boardEl=$('board'),statusEl=$('status'),scoreEl=$('score'),againEl=$('again');
+  var mode=1,diff='lako',board,turn,over,busy,timer=null,score={X:0,O:0,D:0},cells=[];
+
+  function winnerOf(b){
+    for(var i=0;i<LINES.length;i++){
+      var l=LINES[i];
+      if(b[l[0]]&&b[l[0]]===b[l[1]]&&b[l[0]]===b[l[2]])return {p:b[l[0]],line:l};
+    }
+    return null;
+  }
+  function empties(b){var e=[];for(var i=0;i<9;i++)if(!b[i])e.push(i);return e}
+  function rnd(a){return a[Math.floor(Math.random()*a.length)]}
+  function finder(b,p){
+    var e=empties(b);
+    for(var i=0;i<e.length;i++){b[e[i]]=p;var w=winnerOf(b);b[e[i]]=null;if(w)return e[i]}
+    return null;
+  }
+  function minimax(b,p,depth){
+    var w=winnerOf(b);
+    if(w)return w.p==='O'?10-depth:depth-10;
+    var e=empties(b);if(!e.length)return 0;
+    var best=p==='O'?-99:99;
+    for(var i=0;i<e.length;i++){
+      b[e[i]]=p;var s=minimax(b,p==='O'?'X':'O',depth+1);b[e[i]]=null;
+      best=p==='O'?Math.max(best,s):Math.min(best,s);
+    }
+    return best;
+  }
+  function aiMove(){
+    var e=empties(board),m;
+    if(diff==='lako')return rnd(e);
+    if(diff==='srednje'){
+      m=finder(board,'O');if(m!==null)return m;
+      m=finder(board,'X');if(m!==null)return m;
+      if(!board[4]&&Math.random()<.7)return 4;
+      return rnd(e);
+    }
+    var best=-99,moves=[];
+    e.forEach(function(i){
+      board[i]='O';var s=minimax(board,'X',1);board[i]=null;
+      if(s>best){best=s;moves=[i]}else if(s===best)moves.push(i);
+    });
+    return rnd(moves);
+  }
+
+  function build(){
+    boardEl.innerHTML='';cells=[];
+    for(var i=0;i<9;i++){
+      var b=document.createElement('button');
+      b.type='button';b.className='cell';b.dataset.i=i;
+      b.setAttribute('aria-label','Polje '+(i+1));
+      b.addEventListener('click',(function(i){return function(){play(i)}})(i));
+      boardEl.appendChild(b);cells.push(b);
+    }
+  }
+  function paintScore(){
+    var a=mode===1?'Ti':'X',c=mode===1?'Računar':'O';
+    scoreEl.innerHTML='<div class="x-col">'+a+'<b>'+score.X+'</b></div><div>Nerešeno<b>'+score.D+'</b></div><div class="o-col">'+c+'<b>'+score.O+'</b></div>';
+  }
+  function say(t){statusEl.textContent=t}
+  function turnText(){
+    if(mode===1)return turn==='X'?'Tvoj potez (X)':'Računar razmišlja…';
+    return 'Na potezu: '+turn;
+  }
+  function reset(keepScore){
+    clearTimeout(timer);
+    board=[null,null,null,null,null,null,null,null,null];
+    turn='X';over=false;busy=false;
+    cells.forEach(function(c){c.innerHTML='';c.disabled=false;c.classList.remove('win')});
+    if(!keepScore)score={X:0,O:0,D:0};
+    paintScore();say(turnText());
+  }
+  function finish(w){
+    over=true;
+    cells.forEach(function(c){c.disabled=true});
+    if(w){
+      w.line.forEach(function(i){cells[i].classList.add('win')});
+      score[w.p]++;
+      if(mode===1)say(w.p==='X'?'Bravo! Pobeda! 🎉':'Ovaj put je računar bio brži. Probaj opet!');
+      else say('Bravo! '+w.p+' pobeđuje! 🎉');
+      if(mode===2||w.p==='X')Snd.win();else Snd.soft();
+    }else{
+      score.D++;say('Nerešeno — odlična igra!');Snd.soft();
+    }
+    paintScore();
+    againEl.focus();
+  }
+  function play(i){
+    if(over||busy||board[i])return;
+    if(mode===1&&turn==='O')return;
+    place(i);
+  }
+  function place(i){
+    board[i]=turn;
+    var c=cells[i];
+    c.innerHTML=turn==='X'?X_SVG:O_SVG;
+    c.firstChild.classList.add('pop');
+    c.disabled=true;
+    turn==='X'?Snd.put():Snd.pop();
+    var w=winnerOf(board);
+    if(w){finish(w);return}
+    if(!empties(board).length){finish(null);return}
+    turn=turn==='X'?'O':'X';
+    say(turnText());
+    if(mode===1&&turn==='O'){
+      busy=true;
+      timer=setTimeout(function(){busy=false;if(!over)place(aiMove())},550);
+    }
+  }
+
+  document.querySelectorAll('[data-mode]').forEach(function(b){
+    b.addEventListener('click',function(){
+      mode=Number(b.dataset.mode);
+      document.querySelectorAll('[data-mode]').forEach(function(x){x.setAttribute('aria-pressed',String(x===b))});
+      $('diffRow').style.display=mode===1?'':'none';
+      reset(false);
+    });
+  });
+  document.querySelectorAll('[data-diff]').forEach(function(b){
+    b.addEventListener('click',function(){
+      diff=b.dataset.diff;
+      document.querySelectorAll('[data-diff]').forEach(function(x){x.setAttribute('aria-pressed',String(x===b))});
+      reset(false);
+    });
+  });
+  againEl.addEventListener('click',function(){reset(true);cells[4].focus()});
+  document.addEventListener('keydown',function(e){
+    if(e.key>='1'&&e.key<='9'&&!e.ctrlKey&&!e.altKey)play(Number(e.key)-1);
+  });
+
+  build();reset(false);
+  cells[4].focus({preventScroll:true});
+  window.__ttt={get board(){return board},get over(){return over},setMode:function(m){document.querySelector('[data-mode="'+m+'"]').click()},aiMove:aiMove,minimax:minimax,winnerOf:winnerOf,setDiff:function(d){diff=d}};
+})();
+</script>
+</body>
+</html>
