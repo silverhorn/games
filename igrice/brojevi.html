@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brojevi 1–5</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:"Trebuchet MS",system-ui,sans-serif;background:linear-gradient(#bfe6ff,#e9f7ff 60%,#fff6d6);min-height:100vh;color:#1d3557}
+.wrap{max-width:780px;margin:0 auto;padding:12px 16px 40px}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:10px}
+h1{margin:6px 0;font-size:32px}
+h2{font-size:24px;text-align:center;margin:14px 0 6px;line-height:1.3}
+.sub{margin:4px 0 14px;font-size:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.tile{position:relative;background:#fff;border:3px solid #7cc0ff;border-radius:18px;padding:14px;text-align:left;cursor:pointer;font:inherit;color:inherit;display:flex;flex-direction:column;gap:4px}
+.tile:hover,.tile:focus-visible{transform:translateY(-2px);border-color:#ff9a2e;outline:none}
+.tile small{font-size:14px;color:#456}
+.ti{font-size:40px}
+.st{position:absolute;right:10px;top:8px;font-size:22px}
+.btn,.back,.mute{font:inherit;font-size:18px;padding:10px 18px;border-radius:14px;border:3px solid #7cc0ff;background:#fff;cursor:pointer;color:inherit}
+.btn.go{background:#5fd68a;border-color:#2fa862;color:#053}
+.btn:focus-visible,.num:focus-visible{outline:3px solid #ff9a2e}
+.ctl{display:flex;gap:12px;justify-content:center;margin-top:14px;min-height:52px}
+.dots{display:flex;gap:8px}
+.dots i{width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid #7cc0ff}
+.dots i.d{background:#5fd68a;border-color:#2fa862}
+.dots i.c{background:#ffd24a;border-color:#e0a800}
+#msg{text-align:center;font-size:22px;min-height:34px;margin-top:8px}
+#msg.good{color:#1a8a4a;font-weight:bold}
+.lock{pointer-events:none}
+.items{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:14px 0}
+.it{font-size:50px;background:#fff;border:3px solid #cfe6ff;border-radius:16px;width:84px;height:84px;position:relative;cursor:pointer;padding:0}
+.it span{position:absolute;right:6px;bottom:0;font-size:24px;font-weight:bold;color:#e4572e}
+.ans{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.num{font:inherit;font-size:36px;width:72px;height:72px;border-radius:50%;border:3px solid #7cc0ff;background:#fff;cursor:pointer;color:#1d3557}
+.num:hover{background:#fff3c4}
+.sign{border-radius:18px;width:92px}
+.shake{animation:sh .4s}
+@keyframes sh{20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+.dice{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);width:74px;height:74px;padding:8px;background:#fff;border-radius:14px;border:3px solid #7cc0ff}
+.dice i.on,.balloon i.on{background:#3b8bff;border-radius:50%;aspect-ratio:1;width:84%;align-self:center;justify-self:center}
+.row{display:flex;gap:14px;justify-content:center;align-items:center;flex-wrap:wrap;margin:14px 0}
+.q{font-size:60px;width:74px;height:74px;display:flex;align-items:center;justify-content:center;border:3px dashed #ff9a2e;border-radius:14px;background:#fff8e1;color:#ff9a2e}
+.grp{display:flex;flex-wrap:wrap;gap:2px;justify-content:center;max-width:190px;font-size:34px;line-height:1.1}
+.gbtn{font:inherit;background:#fff;border:4px solid #cfe6ff;border-radius:20px;padding:14px;cursor:pointer;min-width:170px}
+.gbtn:hover{border-color:#ff9a2e}
+.gbtn b{display:block;font-size:30px;color:#e4572e}
+.cols{max-width:460px;margin-left:auto;margin-right:auto;display:flex;justify-content:space-around;gap:20px;margin:14px 0}
+.col{display:flex;flex-direction:column;gap:12px;align-items:center}
+.kid{font:inherit;display:flex;align-items:center;gap:10px;font-size:34px;background:#fff;border:4px solid #cfe6ff;border-radius:16px;padding:6px 16px;cursor:pointer;min-width:120px;justify-content:center}
+.kid b{font-size:38px;color:#e4572e}
+.balloon{cursor:pointer;background:#fff;border:4px solid #cfe6ff;width:96px;height:112px;padding:14px 12px;border-radius:50% 50% 48% 48%/58% 58% 42% 42%;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr)}
+.sel{border-color:#ff9a2e !important;background:#fff3c4}
+.m0{border-color:#e4572e !important;background:#ffe1d8}.m1{border-color:#2fa862 !important;background:#dcf7e6}.m2{border-color:#9b59d0 !important;background:#eddcf8}.m3{border-color:#e0a800 !important;background:#fff0b3}.m4{border-color:#3b8bff !important;background:#d9e8ff}
+.flower{position:relative;width:280px;height:280px;margin:10px auto}
+.petal{position:absolute;width:76px;height:76px;border-radius:50%;border:3px dashed #e08fb8;background:#fff;cursor:pointer;padding:0}
+.petal.on{background:#ff8fc2;border:3px solid #d6528f}
+.core{position:absolute;left:100px;top:100px;width:80px;height:80px;border-radius:50%;background:#ffd24a;border:4px solid #e0a800;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:bold}
+.stars{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:460px;margin:14px auto}
+.star{font:inherit;font-size:44px;width:84px;height:84px;border-radius:50%;border:4px solid transparent;background:#fff;cursor:pointer;padding:0}
+.star.on{border-color:#e4572e;background:#fff3c4}
+.ball{font:inherit;width:74px;height:74px;border-radius:50%;border:4px solid #2a6fd6;background:#3b8bff;cursor:pointer;padding:0}
+.ball.r{background:#ff4d4d;border-color:#b52b2b}
+.basket{min-height:110px;min-width:260px;border:4px dashed #b5793a;background:#ffeccc;border-radius:10px 10px 40px 40px;padding:8px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center}
+.line{display:flex;gap:6px;justify-content:center;font-size:30px;margin:6px;color:#456}
+.line b{color:#1d3557}
+.hint{text-align:center;color:#456;font-size:16px}
+.sw{font:inherit;font-size:28px;font-weight:bold;width:70px;height:70px;border-radius:50%;border:5px solid #fff;box-shadow:0 0 0 3px #789;cursor:pointer;color:#fff;text-shadow:0 0 3px #000}
+.sw.sel{box-shadow:0 0 0 5px #ff9a2e;transform:scale(1.12)}
+svg.bf{width:100%;max-width:440px;display:block;margin:6px auto}
+svg.bf .reg{fill:#fff;stroke:#345;stroke-width:3;cursor:pointer}
+svg.bf text{font-size:22px;font-weight:bold;fill:#345;text-anchor:middle;pointer-events:none}
+.fin{text-align:center;padding:30px 0}
+.fin .big{font-size:80px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+(function(){
+'use strict';
+const $=(s,r=document)=>r.querySelector(s);
+const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[rnd(0,a.length-1)];
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
+const EM=['🍎','🍐','🐞','⭐','🎈','🌸','🐟','🍓','🦆','🐝'];
+const PRAISE=['Bravo!','Super!','Tačno!','Odlično!','Tako je!'];
+const w3=(n,a,b,c)=>n===1?a:(n<5?b:c);
+
+/* zvuk */
+let ac,muted=false;
+try{muted=localStorage.getItem('brojevi-muted')==='1'}catch(e){}
+function tone(f,d,t,type,v){
+  if(muted)return;
+  try{
+    ac=ac||new (window.AudioContext||window.webkitAudioContext)();
+    const o=ac.createOscillator(),g=ac.createGain();
+    o.type=type||'sine';o.frequency.value=f;v=v||.14;
+    o.connect(g);g.connect(ac.destination);
+    const s=ac.currentTime+(t||0);
+    g.gain.setValueAtTime(v,s);g.gain.exponentialRampToValueAtTime(.001,s+d);
+    o.start(s);o.stop(s+d);
+  }catch(e){}
+}
+const snd={
+  tap(){tone(620,.08)},
+  ok(){[523,659,784].forEach((f,i)=>tone(f,.2,i*.1))},
+  no(){tone(280,.22,0,'triangle',.1)},
+  win(){[523,659,784,1047].forEach((f,i)=>tone(f,.28,i*.13))}
+};
+
+/* pamcenje */
+function load(){try{return JSON.parse(localStorage.getItem('brojevi-done')||'{}')}catch(e){return {}}}
+function save(i){try{const d=load();d[i]=1;localStorage.setItem('brojevi-done',JSON.stringify(d))}catch(e){}}
+
+const PIP={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8]};
+const cells=n=>[...Array(9)].map((_,i)=>`<i class="${PIP[n].includes(i)?'on':''}"></i>`).join('');
+const dice=n=>`<div class="dice">${cells(n)}</div>`;
+const grp=(n,e)=>`<div class="grp">${(e+' ').repeat(n).trim().split(' ').map(x=>`<span>${x}</span>`).join('')}</div>`;
+const numRow=()=>`<div class="ans">${[1,2,3,4,5].map(k=>`<button class="num" data-k="${k}">${k}</button>`).join('')}</div>`;
+
+const ACTS=[
+ {name:'Prebroji',ico:'🍎',desc:'Izbroj i izaberi broj',run:aCount},
+ {name:'Stavi u korpu',ico:'🧺',desc:'Stavi tačno toliko komada',run:aMake},
+ {name:'Više ili manje',ico:'⚖️',desc:'Gde ima više? Koji znak?',run:aCompare},
+ {name:'Poveži balone',ico:'🎈',desc:'Broj i tačkice',run:aConnect},
+ {name:'Nastavi niz',ico:'🔢',desc:'Šta ide sledeće?',run:aSeq},
+ {name:'Cvetovi',ico:'🌼',desc:'Oboji latice po broju',run:aFlower},
+ {name:'Zaokruži',ico:'⭕',desc:'Zaokruži tačno toliko zvezda',run:aCircle},
+ {name:'Rastavi broj',ico:'🔴',desc:'Crvene i plave loptice',run:aSplit},
+ {name:'Zamislio sam broj',ico:'🤔',desc:'Pogodi koji je broj',run:aRiddle},
+ {name:'Leptir',ico:'🦋',desc:'Oboji po brojevima',run:aButterfly,rounds:1}
+];
+
+const app=$('#app');
+let cur=0,round=0,S={};
+
+function muteBtn(){
+  const b=$('#mute');
+  b.textContent=muted?'🔇':'🔊';
+  b.onclick=()=>{muted=!muted;try{localStorage.setItem('brojevi-muted',muted?'1':'0')}catch(e){}b.textContent=muted?'🔇':'🔊';if(!muted)snd.tap()};
+}
+
+function menu(){
+  const done=load();
+  app.innerHTML=`<div class="wrap"><header class="hd"><h1>🔢 Brojevi 1–5</h1><button class="mute" id="mute" aria-label="Zvuk"></button></header>
+  <p class="sub">Izaberi igru. Nema žurbe i nema kazni — probaj koliko god puta želiš. 🙂</p>
+  <div class="grid">${ACTS.map((a,i)=>`<button class="tile" data-i="${i}"><span class="ti">${a.ico}</span><b>${a.name}</b><small>${a.desc}</small>${done[i]?'<span class="st">⭐</span>':''}</button>`).join('')}</div></div>`;
+  muteBtn();
+  app.querySelectorAll('.tile').forEach(t=>t.onclick=()=>{snd.tap();startAct(+t.dataset.i)});
+}
+
+function startAct(i){
+  cur=i;round=0;
+  S={order:shuf([1,2,3,4,5])};
+  next();
+}
+
+function frame(R){
+  app.innerHTML=`<div class="wrap"><header class="hd"><button class="back" id="back">◀ Meni</button>
+  <div class="dots">${[...Array(R)].map((_,i)=>`<i class="${i<round?'d':i===round?'c':''}"></i>`).join('')}</div>
+  <button class="mute" id="mute" aria-label="Zvuk"></button></header>
+  <h2 id="q"></h2><div id="area"></div><div id="msg"></div>
+  <div class="ctl"><button class="btn" id="chk" hidden>Gotovo ✔</button><button class="btn go" id="nx" hidden>Dalje ▶</button></div></div>`;
+  muteBtn();
+  $('#back').onclick=menu;
+}
+
+function next(){
+  const a=ACTS[cur],R=a.rounds||5;
+  if(round>=R)return finish();
+  frame(R);
+  let solved=false;
+  const msg=$('#msg');
+  const c={
+    round,
+    q:t=>{$('#q').innerHTML=t},
+    area:$('#area'),
+    needCheck(fn){const b=$('#chk');b.hidden=false;b.onclick=fn},
+    ok(){
+      if(solved)return;solved=true;
+      snd.ok();
+      msg.textContent=pick(PRAISE)+' 🎉';msg.className='good';
+      $('#chk').hidden=true;$('#area').classList.add('lock');
+      const n=$('#nx');n.hidden=false;n.textContent=round+1>=R?'Kraj ▶':'Dalje ▶';
+      n.onclick=()=>{round++;next()};n.focus();
+    },
+    bad(el,t){
+      snd.no();msg.className='';msg.textContent=t||'Probaj ponovo 🙂';
+      if(el){el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake')}
+    },
+    info(t){msg.className='';msg.textContent=t}
+  };
+  a.run(c);
+}
+
+function finish(){
+  save(cur);snd.win();
+  const nxt=(cur+1)%ACTS.length;
+  app.innerHTML=`<div class="wrap fin"><div class="big">⭐🎉⭐</div><h1>Bravo!</h1><p class="sub">Završio/la si igru „${ACTS[cur].name}“.</p>
+  <div class="ctl"><button class="btn" id="again">↺ Ponovo</button><button class="btn go" id="nextg">${ACTS[nxt].ico} ${ACTS[nxt].name} ▶</button><button class="btn" id="mn">Meni</button></div></div>`;
+  $('#again').onclick=()=>startAct(cur);
+  $('#nextg').onclick=()=>startAct(nxt);
+  $('#mn').onclick=menu;
+}
+
+/* ---------- 1. Prebroji ---------- */
+function aCount(c){
+  const n=S.order[c.round],e=pick(EM);
+  c.q(`Koliko ima ${e}? <br><small>Dodirni svaki da ga izbrojiš.</small>`);
+  c.area.innerHTML=`<div class="items">${[...Array(n)].map(()=>`<button class="it">${e}<span></span></button>`).join('')}</div>${numRow()}`;
+  let cnt=0;
+  c.area.querySelectorAll('.it').forEach(b=>b.onclick=()=>{
+    if(b.classList.contains('cd'))return;
+    cnt++;b.classList.add('cd');b.querySelector('span').textContent=cnt;snd.tap();
+  });
+  c.area.querySelectorAll('.num').forEach(b=>b.onclick=()=>+b.dataset.k===n?c.ok():c.bad(b));
+  c.sol=n;
+}
+
+/* ---------- 2. Stavi u korpu ---------- */
+function aMake(c){
+  const n=S.order[c.round],e=pick(EM);
+  let inB=0;
+  c.q(`Stavi ${n} ${e} u korpu.`);
+  const draw=()=>{
+    c.area.innerHTML=`<div class="items" id="tray">${[...Array(6-inB)].map(()=>`<button class="it" data-t="1">${e}</button>`).join('')}</div>
+    <div class="hint">🧺 korpa</div><div class="basket">${[...Array(inB)].map(()=>`<button class="it" data-t="0">${e}</button>`).join('')}</div>`;
+    c.area.querySelectorAll('.it').forEach(b=>b.onclick=()=>{
+      inB+=b.dataset.t==='1'?1:-1;snd.tap();draw();
+    });
+  };
+  draw();
+  c.needCheck(()=>inB===n?c.ok():c.bad(c.area.querySelector('.basket'),inB<n?'Treba još malo. 🙂':'Ima previše — vrati koji nazad. 🙂'));
+  c.sol=n;
+}
+
+/* ---------- 3. Vise ili manje ---------- */
+function aCompare(c){
+  let a=rnd(1,5),b;do{b=rnd(1,5)}while(b===a);
+  const e=pick(EM),e2=e;
+  if(c.round<3){
+    const more=c.round!==1;
+    c.q(more?'Gde ima <u>više</u>?':'Gde ima <u>manje</u>?');
+    c.area.innerHTML=`<div class="row"><button class="gbtn" data-n="${a}">${grp(a,e)}</button><button class="gbtn" data-n="${b}">${grp(b,e2)}</button></div>`;
+    const right=more?Math.max(a,b):Math.min(a,b);
+    c.area.querySelectorAll('.gbtn').forEach(g=>g.onclick=()=>+g.dataset.n===right?c.ok():c.bad(g));
+    c.sol=right;
+  }else{
+    c.q('Koji znak ide između?<br><small>Otvoreni kraj znaka gleda veći broj.</small>');
+    c.area.innerHTML=`<div class="row"><div><b style="font-size:40px">${a}</b>${grp(a,e)}</div><div class="q">?</div><div><b style="font-size:40px">${b}</b>${grp(b,e2)}</div></div>
+    <div class="ans"><button class="num sign" data-s="&lt;">&lt;</button><button class="num sign" data-s="&gt;">&gt;</button></div>`;
+    const right=a<b?'<':'>';
+    c.area.querySelectorAll('.sign').forEach(s=>s.onclick=()=>{
+      if(s.textContent===right){$('.q',c.area).textContent=right;c.ok()}else c.bad(s);
+    });
+    c.sol=right;
+  }
+}
+
+/* ---------- 4. Povezi balone ---------- */
+function aConnect(c){
+  const p=[3,3,4,4,5][c.round];
+  const nums=shuf([1,2,3,4,5]).slice(0,p).sort((x,y)=>x-y);
+  const right=shuf(nums),animals=shuf(['🐶','🐱','🐰','🐻','🐼']);
+  c.q('Poveži svakoga sa balonom koji ima<br>toliko tačkica koliki je njegov broj.');
+  c.area.innerHTML=`<div class="cols"><div class="col">${nums.map((n,i)=>`<button class="kid" data-n="${n}">${animals[i]} <b>${n}</b></button>`).join('')}</div>
+  <div class="col">${right.map(n=>`<button class="balloon" data-n="${n}">${cells(n)}</button>`).join('')}</div></div>`;
+  let sel=null,done=0;
+  const kids=[...c.area.querySelectorAll('.kid')],bs=[...c.area.querySelectorAll('.balloon')];
+  kids.forEach(k=>k.onclick=()=>{
+    if(k.dataset.m)return;
+    kids.forEach(x=>x.classList.remove('sel'));
+    sel=k;k.classList.add('sel');snd.tap();
+  });
+  bs.forEach(bl=>bl.onclick=()=>{
+    if(bl.dataset.m)return;
+    if(!sel)return c.info('Prvo dodirni jednog od njih. 🙂');
+    if(sel.dataset.n===bl.dataset.n){
+      const cl='m'+done;
+      sel.classList.remove('sel');sel.classList.add(cl);bl.classList.add(cl);
+      sel.dataset.m=bl.dataset.m=1;sel=null;done++;snd.ok();
+      if(done===p)c.ok();
+    }else c.bad(bl);
+  });
+  c.sol=p;
+}
+
+/* ---------- 5. Nastavi niz ---------- */
+function aSeq(c){
+  let seq,miss;
+  if(c.round<3){const s=rnd(1,2);seq=[s,s+1,s+2];miss=s+3}
+  else{const s=rnd(4,5);seq=[s,s-1,s-2];miss=s-3}
+  c.q('Šta ide sledeće?<br><small>Pogledaj tačkice.</small>');
+  c.area.innerHTML=`<div class="row">${seq.map(dice).join('')}<div class="q">?</div></div>${numRow()}`;
+  c.area.querySelectorAll('.num').forEach(b=>b.onclick=()=>{
+    if(+b.dataset.k===miss){$('.q',c.area).outerHTML=dice(miss);c.ok()}else c.bad(b);
+  });
+  c.sol=miss;
+}
+
+/* ---------- 6. Cvetovi ---------- */
+function aFlower(c){
+  const n=S.order[c.round];
+  c.q('Oboji toliko latica koliki je broj u sredini cveta.');
+  let h='<div class="flower">';
+  for(let i=0;i<5;i++){
+    const ang=(i*72-90)*Math.PI/180;
+    h+=`<button class="petal" style="left:${102+Math.cos(ang)*92}px;top:${102+Math.sin(ang)*92}px"></button>`;
+  }
+  c.area.innerHTML=h+`<div class="core">${n}</div></div>`;
+  c.area.querySelectorAll('.petal').forEach(p=>p.onclick=()=>{p.classList.toggle('on');snd.tap()});
+  c.needCheck(()=>{
+    const k=c.area.querySelectorAll('.petal.on').length;
+    k===n?c.ok():c.bad(c.area.querySelector('.flower'),k<n?'Treba još latica. 🙂':'Ima previše latica — skini koju. 🙂');
+  });
+  c.sol=n;
+}
+
+/* ---------- 7. Zaokruzi ---------- */
+function aCircle(c){
+  const n=S.order[c.round];
+  c.q(`Zaokruži ${n} ${w3(n,'zvezdu','zvezde','zvezda')}.`);
+  c.area.innerHTML=`<div class="stars">${[...Array(8)].map(()=>`<button class="star">⭐</button>`).join('')}</div>`;
+  c.area.querySelectorAll('.star').forEach(s=>s.onclick=()=>{s.classList.toggle('on');snd.tap()});
+  c.needCheck(()=>{
+    const k=c.area.querySelectorAll('.star.on').length;
+    k===n?c.ok():c.bad(c.area.querySelector('.stars'),k<n?'Treba zaokružiti još. 🙂':'Zaokružio/la si previše. 🙂');
+  });
+  c.sol=n;
+}
+
+/* ---------- 8. Rastavi broj ---------- */
+function aSplit(c){
+  const N=[3,3,4,4,5][c.round],k=rnd(1,N-1);
+  c.q(`Oboji ${k} ${w3(k,'lopticu','loptice','loptica')} u crveno.<br><small>Ostale ostaju plave.</small>`);
+  c.area.innerHTML=`<div class="items">${[...Array(N)].map(()=>`<button class="ball"></button>`).join('')}</div><div class="line" id="cnt"></div>`;
+  const upd=()=>{const r=c.area.querySelectorAll('.ball.r').length;$('#cnt',c.area).innerHTML=`🔴 crvenih: <b>${r}</b> &nbsp; 🔵 plavih: <b>${N-r}</b>`};
+  upd();
+  c.area.querySelectorAll('.ball').forEach(b=>b.onclick=()=>{b.classList.toggle('r');snd.tap();upd()});
+  c.needCheck(()=>{
+    const r=c.area.querySelectorAll('.ball.r').length;
+    r===k?c.ok():c.bad($('#cnt',c.area),r<k?'Treba još crvenih. 🙂':'Ima previše crvenih. 🙂');
+  });
+  c.sol=k;
+}
+
+/* ---------- 9. Zamislio sam broj ---------- */
+function aRiddle(c){
+  let t,ans;
+  if(c.round===0){const a=rnd(1,4);t=`Dolazim <b>odmah posle</b> broja ${a}.`;ans=a+1}
+  else if(c.round===1){const a=rnd(2,5);t=`Dolazim <b>odmah pre</b> broja ${a}.`;ans=a-1}
+  else if(c.round<4){const a=rnd(1,3);t=`Veći sam od ${a}, a manji od ${a+2}.`;ans=a+1}
+  else if(Math.random()<.5){t='Veći sam od 4.';ans=5}
+  else{t='Manji sam od 2.';ans=1}
+  c.q(`Zamislio sam broj.<br>${t}<br><small>Koji sam broj?</small>`);
+  c.area.innerHTML=`<div class="line"><b>1</b> <b>2</b> <b>3</b> <b>4</b> <b>5</b></div>${numRow()}`;
+  c.area.querySelectorAll('.num').forEach(b=>b.onclick=()=>+b.dataset.k===ans?c.ok():c.bad(b));
+  c.sol=ans;
+}
+
+/* ---------- 10. Leptir ---------- */
+function aButterfly(c){
+  const COL={1:'#9b59d0',2:'#ffd24a',3:'#ff9a2e',4:'#3b8bff',5:'#ff4d4d'};
+  const NM={1:'ljubičasta',2:'žuta',3:'narandžasta',4:'plava',5:'crvena'};
+  c.q('Oboji leptira.<br><small>Izaberi boju sa brojem, pa dodirni deo sa istim brojem.</small>');
+  const R=[
+   ['path','M146 110 C110 20 20 10 18 70 C16 110 90 130 146 118 Z',3,55,100],
+   ['path','M154 110 C190 20 280 10 282 70 C284 110 210 130 154 118 Z',3,245,100],
+   ['path','M146 122 C90 130 40 150 52 200 C62 235 130 220 146 150 Z',2,110,155],
+   ['path','M154 122 C210 130 260 150 248 200 C238 235 170 220 154 150 Z',2,190,155],
+   ['circle',{cx:80,cy:62,r:20},5,80,70],
+   ['circle',{cx:220,cy:62,r:20},5,220,70],
+   ['circle',{cx:86,cy:192,r:17},1,86,198],
+   ['circle',{cx:214,cy:192,r:17},1,214,198],
+   ['ellipse',{cx:150,cy:128,rx:11,ry:50},4,150,134]
+  ];
+  let s='<svg class="bf" viewBox="0 0 300 250"><path d="M148 80 Q135 40 120 25 M152 80 Q165 40 180 25" stroke="#345" stroke-width="3" fill="none"/>';
+  R.forEach((r,i)=>{
+    const at=typeof r[1]==='string'?`d="${r[1]}"`:Object.entries(r[1]).map(([k,v])=>`${k}="${v}"`).join(' ');
+    s+=`<${r[0]} class="reg" data-n="${r[2]}" ${at}/>`;
+  });
+  R.forEach(r=>{s+=`<text x="${r[3]}" y="${r[4]}">${r[2]}</text>`});
+  s+='</svg>';
+  c.area.innerHTML=s+`<div class="ans">${[1,2,3,4,5].map(k=>`<button class="sw" data-k="${k}" style="background:${COL[k]}" title="${NM[k]}">${k}</button>`).join('')}</div>`;
+  let sel=null,left=R.length;
+  const sws=[...c.area.querySelectorAll('.sw')];
+  sws.forEach(b=>b.onclick=()=>{sws.forEach(x=>x.classList.remove('sel'));b.classList.add('sel');sel=+b.dataset.k;snd.tap();c.info(`Boja ${sel}: ${NM[sel]}`)});
+  c.area.querySelectorAll('.reg').forEach(r=>r.onclick=()=>{
+    if(r.dataset.d)return;
+    const n=+r.dataset.n;
+    if(!sel)return c.info('Prvo izaberi boju. 🙂');
+    if(sel!==n)return c.bad(null,`Ovde ide broj ${n}. 🙂`);
+    r.style.fill=COL[n];r.dataset.d=1;left--;snd.ok();c.info('');
+    if(!left)c.ok();
+  });
+  c.sol=R;
+}
+
+/* test-hook */
+menu();
+})();
+</script>
+</body>
+</html>
